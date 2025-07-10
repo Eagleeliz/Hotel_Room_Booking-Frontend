@@ -5,7 +5,7 @@ export const Layout = () => {
   return (
     <div className="flex flex-1 min-h-[calc(100vh-160px)]"> {/* Adjusts height between Navbar and Footer */}
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md border-r p-4">
+      <aside className="w-64 bg-white shadow-md border-r h-screen  p-4">
         <SideNav />
       </aside>
 

@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar'
 import Container from '../components/Container'
 import Footer from '../components/Footer'
 import HomeHero from '../Hero/HomeHero'
+import HotelTeaser from '../Hero/HotelTeaser'
 export const Home: React.FC = () => {
   return (
     <>
@@ -10,6 +11,7 @@ export const Home: React.FC = () => {
         <Navbar />
            </Container>
            <HomeHero/>
+           <HotelTeaser/>
            <Footer/>
     </>
   )

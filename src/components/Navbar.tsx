@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-rose-200 py-5 px-4 fixed w-full z-50 top-0 shadow-lg rounded-b-lg">
+    <nav className="bg-rose-200 py-5 px-4 w-full shadow-lg rounded-b-lg">
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-lg font-semibold text-gray-800">Golden Home Hotels</div>
 

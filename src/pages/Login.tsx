@@ -20,23 +20,42 @@ const Login = () => {
  const dispatch = useDispatch();
  const [loginUser, {isLoading}] = userApi.useLoginUserMutation()
   const {register,handleSubmit,formState:{errors}}=useForm<userLoginForm>()
-  const onSubmit=async(data:userLoginForm)=>{
-    const loadingToastId = toast.loading("Logging..");
-  // console.log(data)
-  try{
-    const res= await loginUser(data).unwrap()
-    console.log(res)
-    toast.success(res.message,{id:loadingToastId})
-    dispatch(setCredentials(res))
-    navigate('/dashboard')
-    
-  
-  }catch(error:any){
-    console.log("Error occured:",error)
-    toast.error("Failed to LogIn: "+ (error.data?.error))
-      toast.dismiss(loadingToastId)
+const onSubmit = async (data: userLoginForm) => {
+  const loadingToastId = toast.loading("Logging..");
+
+  try {
+    const res = await loginUser(data).unwrap();
+    toast.success("Login successful", { id: loadingToastId });
+
+    // Convert backend format to expected frontend shape
+    const user = {
+      id: res.userId,
+      email: res.email,
+      firstName: res.firstName,
+      lastName: res.lastName,
+      userType: res.role,
+      contactPhone: res.contactPhone,
+      address: res.address
+    };
+
+    dispatch(setCredentials({ user, token: res.token, userType: user.userType }));
+
+
+    // Redirect based on role
+    if (user.userType === "admin") {
+      navigate("/admindashboard");
+    } else {
+      navigate("/dashboard");
+    }
+
+  } catch (error: any) {
+    console.log("Error occurred:", error);
+    toast.error("Failed to LogIn: " + (error.data?.error || "Unknown error"));
+    toast.dismiss(loadingToastId);
   }
-  }
+};
+
+
 
   return (
     <>
