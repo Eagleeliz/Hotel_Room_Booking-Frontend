@@ -26,8 +26,14 @@ const HotelCard: React.FC<HotelCardProps> = ({
   address,
 }) => {
   return (
-    <div className="relative w-[22rem] h-[18rem] md:w-[24rem] md:h-[20rem] lg:w-[26rem] lg:h-[22rem] rounded-xl overflow-hidden group shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-[1.02]">
-      
+   <div className="relative 
+  w-[27rem] h-[24rem] 
+  md:w-[26rem] md:h-[22rem] 
+  lg:w-[28rem] lg:h-[24rem] 
+  rounded-xl overflow-hidden group shadow-md 
+  hover:shadow-xl transition-shadow duration-300 hover:scale-[1.02]">
+
+
       {/* Hotel Image with subtle blur & darkening */}
       <img
         src={hotelImg}
@@ -61,12 +67,13 @@ const HotelCard: React.FC<HotelCardProps> = ({
         <p className="text-lg italic">{category}</p>
 
         {/* View Rooms Button */}
-        <Link
-          to={`/hotels/${hotelId}/rooms`}
-          className="mt-4 inline-block bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 text-white font-semibold px-6 py-2 rounded-full hover:from-rose-400 hover:to-pink-400 transition-all duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-pink-300"
-        >
-          View Rooms
-        </Link>
+       <Link
+  to={`/hotels/${hotelId}/rooms`}
+  className="mt-4 inline-block bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 !text-blue-200 no-underline font-semibold px-6 py-2 rounded-full hover:from-rose-400 hover:to-pink-400 transition-all duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-pink-300"
+>
+  View Rooms
+</Link>
+
       </div>
     </div>
   );

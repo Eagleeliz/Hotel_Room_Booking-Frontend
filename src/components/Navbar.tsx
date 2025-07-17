@@ -41,10 +41,10 @@ const Navbar: React.FC = () => {
         {/* Desktop Buttons */}
         {!isAuthenticated ? (
           <div className="hidden md:flex space-x-3">
-            <Link to="/register" className="flex items-center gap-1 bg-red-700 hover:bg-red-800 text-white px-3 py-1.5 rounded-md text-sm">
+            <Link to="/register" className="flex items-center gap-1 px-3 py-1.5 rounded-md text-sm border border-white bg-pink-50 text-pink-500 transition-all duration-300 hover:text-rose-600">
               <FaUserPlus /> Register
             </Link>
-            <Link to="/login" className="flex items-center gap-1 bg-stone-700 hover:bg-stone-700 text-white px-3 py-1.5 rounded-md text-sm">
+            <Link to="/login" className="flex items-center gap-1 px-3 py-1.5 rounded-md text-sm border border-white bg-pink-50 text-pink-500 transition-all duration-300 hover:text-rose-600">
               <FaSignInAlt /> Login
             </Link>
           </div>
@@ -52,14 +52,14 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex gap-2">
             <div className="dropdown dropdown-end">
               <button className="btn btn-ghost flex items-center">
-                <span className="text-gray-200">Hey, {user.firstName}</span>
+                <span className="text-gray-200">Hey, {user?.firstName}</span>
                 <svg className="w-5 h-5 ml-1 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
               </button>
               <ul className="dropdown-content bg-white rounded-box shadow-md mt-3 w-52 p-2">
                 <li>
-                  <Link to={user.userType === "admin" ? "/admindashboard/analytics" : "/dashboard"} className="flex items-center text-gray-500 hover:bg-rose-100 px-3 py-1 rounded">
+                  <Link to={user?.role === "admin" ? "/admindashboard/analytics" : "/dashboard"} className="flex items-center text-gray-500 hover:bg-rose-100 px-3 py-1 rounded">
                     <GrDashboard className="text-rose-600 mr-2" />
-                    {user.userType === "admin" ? "Admin Dashboard" : "User Dashboard"}
+                    {user?.role === "admin" ? "Admin Dashboard" : "User Dashboard"}
                   </Link>
                 </li>
                 <li>
@@ -94,9 +94,9 @@ const Navbar: React.FC = () => {
               </>
             ) : (
               <>
-                <Link to={user.userType === "admin" ? "/admindashboard/analytics" : "/dashboard/me"} onClick={() => setMenuOpen(false)} className="flex items-center text-gray-400 hover:bg-rose-100 px-3 py-1 rounded">
+                <Link to={user?.role === "admin" ? "/admindashboard/analytics" : "/dashboard/me"} onClick={() => setMenuOpen(false)} className="flex items-center text-gray-400 hover:bg-rose-100 px-3 py-1 rounded">
                   <GrDashboard className="text-rose-600 mr-2" />
-                  {user.userType === "admin" ? "Admin Dashboard" : "User Dashboard"}
+                  {user?.role === "admin" ? "Admin Dashboard" : "User Dashboard"}
                 </Link>
                 <button onClick={() => { setMenuOpen(false); handleLogout(); }} className="flex items-center text-gray-800 hover:bg-rose-100 px-3 py-1 rounded">
                   <FaSignOutAlt className="text-rose-600 mr-2" /> Logout

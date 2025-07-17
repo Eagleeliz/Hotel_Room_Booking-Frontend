@@ -18,8 +18,7 @@ const HomeHero: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative w-screen h-screen overflow-hidden flex items-center justify-center bg-black">
-      {/* Animated Image */}
+     <section className="relative w-screen h-[65vh] overflow-hidden flex items-center justify-center bg-black">
       <AnimatePresence>
         <motion.img
           key={current}

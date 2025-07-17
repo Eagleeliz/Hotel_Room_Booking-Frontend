@@ -20,12 +20,11 @@ const About: React.FC = () => {
         <hr className="border-pink-300 w-24 mx-auto mb-10" />
 
         {/* Card 1 */}
-        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl shadow-xl mb-12 max-w-6xl mx-auto overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl shadow-xl hover:shadow-pink-500/50 transition-shadow duration-300 mb-12 max-w-6xl mx-auto overflow-hidden">
           <div className="md:w-1/2 p-6 md:p-10 text-center md:text-left">
             <h2 className="text-3xl md:text-4xl font-bold text-pink-600 mb-6 tracking-wide">
-  ✨ Welcome to <span className="text-gray-700">Golden Home Hotels</span> ✨
-</h2>
-
+              ✨ Welcome to <span className="text-gray-700">Golden Home Hotels</span> ✨
+            </h2>
             <p className="text-gray-700 leading-relaxed">
               Whether you're craving a serene coastal sunrise or the charm of Kenya’s highlands, our platform lets you search for the hotel of your choice, view available rooms, and book your perfect escape—all in one place.
             </p>
@@ -37,8 +36,8 @@ const About: React.FC = () => {
           />
         </div>
 
-        {/* Card 2:  */}
-        <div className="flex flex-col md:flex-row-reverse items-center bg-white rounded-xl shadow-xl mb-12 max-w-6xl mx-auto overflow-hidden">
+        {/* Card 2 */}
+        <div className="flex flex-col md:flex-row-reverse items-center bg-white rounded-xl shadow-xl hover:shadow-pink-500/50 transition-shadow duration-300 mb-12 max-w-6xl mx-auto overflow-hidden">
           <div className="md:w-1/2 p-6 md:p-10 text-center md:text-left">
             <h2 className="text-2xl font-semibold text-pink-500 mb-4">Our Mission</h2>
             <p className="text-gray-700 leading-relaxed">
@@ -46,14 +45,14 @@ const About: React.FC = () => {
             </p>
           </div>
           <img
-           src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
             alt="Kenyan highlands"
             className="md:w-1/2 h-64 md:h-full object-cover"
           />
         </div>
 
-        {/* Card 3: */}
-        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl shadow-xl mb-12 max-w-6xl mx-auto overflow-hidden">
+        {/* Card 3 */}
+        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl shadow-xl hover:shadow-pink-500/50 transition-shadow duration-300 mb-12 max-w-6xl mx-auto overflow-hidden">
           <div className="md:w-1/2 p-6 md:p-10 text-center md:text-left">
             <h2 className="text-2xl font-semibold text-pink-500 mb-4">Our Vision</h2>
             <p className="text-gray-700 leading-relaxed">

@@ -51,8 +51,13 @@ try{
 
      />
      <Navbar/>
-    <section className="mt-8 w-screen min-h-screen flex items-center justify-center bg-rose-50 px-4">
-      <div className="bg-white rounded-2xl shadow-md w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+        <section className="w-screen min-h-screen bg-rose-50 px-4 pt-15">
+          <div className="bg-white rounded-xl shadow-md 
+            w-full max-w-[1000px] min-h-[65vh] 
+            grid grid-cols-1 md:grid-cols-2 
+            overflow-hidden px-6 py-6 mx-auto items-center">
+
+
         
         {/* Left Side Image (Hidden on small screens) */}
               <div className="hidden md:block">

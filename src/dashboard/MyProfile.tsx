@@ -1,161 +1,187 @@
-import { useEffect, useState } from 'react';
-import { FaCamera, FaEdit, FaTimes } from 'react-icons/fa';
-import { useSelector } from "react-redux";
-import { useNavigate } from 'react-router-dom';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import {
+  useGetMyProfileQuery,
+  useUpdateMyProfileMutation,
+} from '../features/api/userApi';
+import { useSelector } from 'react-redux';
 import type { RootState } from '../app/store';
-import { SaveIcon } from 'lucide-react';
 
-
-interface FormValues {
+type ProfileFormData = {
   firstName: string;
   lastName: string;
   email: string;
-  address: string;
   password?: string;
-}
+  contactPhone: string;
+  address: string;
+};
 
+const MyProfile: React.FC = () => {
+  //  const user = useSelector((state: RootState) => state.auth.user);
+  //  console.log(user)
+  const { data, isLoading, error } = useGetMyProfileQuery();
+  console.log(data)
+  const [updateProfile] = useUpdateMyProfileMutation();
 
-const UserProfile = () => {
-  const {user,isAuthenticated}=useSelector((state:RootState)=>state.auth)
-  // const  userId = user?.userId;
+  const [formData, setFormData] = useState<ProfileFormData>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    contactPhone: '',
+    address: '',
+  });
 
-  // const {}=userApi.
-
-  const navigate = useNavigate();
-  const {  userType } = useSelector((state: RootState) => state.auth);
-  const profilePicture = user?.profileUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName)}&background=4ade80&color=fff&size=128`;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-
-  const handleModalToggle = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-  // const cloud_name= "";
-  // const preset_key = "";
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    } else if (userType !== 'admin') {
-      navigate('/dashboard/profile');
+    if (data) {
+      setFormData({
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
+        email: data.email || '',
+        contactPhone: data.contactPhone || '',
+        address: data.address || '',
+      });
     }
-  }, [isAuthenticated, userType, navigate]);
+  }, [data]);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
-
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log(data)
-
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const payload = { ...formData };
+    if (!payload.password) delete payload.password;
+
+    try {
+      await updateProfile(payload).unwrap();
+      alert('✅ Profile updated successfully');
+      setShowForm(false);
+    } catch (err) {
+      console.error(err);
+      alert('❌ Failed to update profile');
+    }
+  };
+
+  if (isLoading) return <p className="text-center mt-10 text-gray-700">Loading profile...</p>;
+  if (error) return <p className="text-center mt-10 text-red-500">Failed to load profile</p>;
 
   return (
-    <div className="min-h-screen text-white py-10 px-5">
-      <div className="max-w-4xl mx-auto rounded-lg shadow-lg p-5">
-        <div className="flex flex-col md:flex-row items-center justify-between border-b border-gray-700 pb-5 mb-5">
-          <div className="relative flex items-center gap-4 mb-4 md:mb-0">
-            <img
-              src={user?.profileUrl || profilePicture}
-              alt="Profile"
-              className="w-24 h-24 rounded-full border-4 border-orange-500"
-            />
-            <label className="absolute bottom-0 bg-orange-500 p-2 rounded-full cursor-pointer">
-              <FaCamera />
-              <input type="file" className="hidden"  />
-            </label>
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-gray-50 text-gray-800">
+      {!showForm ? (
+        <>
+          <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">My Profile</h2>
+          <div className="grid md:grid-cols-2 gap-6 bg-white p-6 rounded shadow">
             <div>
-              <h2 className="text-3xl font-bold">{user?.firtname}</h2>
-              <p className="text-gray-400">{user?.email}</p>
+              <p><span className="font-semibold">First Name:</span> {formData.firstName}</p>
+              <p><span className="font-semibold">Last Name:</span> {formData.lastName}</p>
+              <p><span className="font-semibold">Email:</span> {formData.email}</p>
+            </div>
+            <div>
+              <p><span className="font-semibold">Phone:</span> {formData.contactPhone}</p>
+              <p><span className="font-semibold">Address:</span> {formData.address}</p>
             </div>
           </div>
           <button
-            className="btn btn-warning flex items-center gap-2"
-            onClick={handleModalToggle}
+            onClick={() => setShowForm(true)}
+            className="mt-6 w-full md:w-auto bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700"
           >
-            <FaEdit /> Edit Profile
+            Edit Profile
           </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-lg p-4">
-            <h3 className="text-2xl font-bold mb-3">Personal Information</h3>
-            <p className="mb-2">
-              <span className="font-bold">First Name:</span> {user?.firstName}
-            </p>
-            <p className="mb-2">
-              <span className="font-bold">First Name:</span> {user?.lastName}
-            </p>
-          </div>
-          <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-lg p-4">
-            <h3 className="text-2xl font-bold mb-3">Security Settings</h3>
-            <p className="mb-2">
-              <span className="font-bold">Password:</span> ********
-            </p>
-            <button className="btn btn-secondary">Change Password</button>
-          </div>
-
-        </div>
-      </div>
-
-      {isModalOpen && (
-        <div className="modal modal-open">
-          <div className="modal-box">
-            <div className="flex justify-center items-center mb-4 ">
-              <h2 className="text-2xl font-bold text-orange-500 ">Edit Profile</h2>
+        </>
+      ) : (
+        <>
+          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Edit Profile</h2>
+          <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded shadow">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">First Name</label>
+              <input
+                type="text"
+                name="firstName"
+                className="w-full border px-3 py-2 rounded text-gray-800"
+                value={formData.firstName}
+                onChange={handleChange}
+              />
             </div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="mb-4">
-                <label htmlFor="firstName" className="block text-sm font-medium text-orange-500">Full Name</label>
-                <input
-                  type="text"
-                  id="firstName"
-                  className="input  w-full  text-blue-500 text-sm"
-                  defaultValue={user?.firstName}
-                  {...register('firstName', { required: 'firstName is required' })}
-                />
-                {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
-              </div>
-              <div className="mb-4">
-                <label htmlFor="lastName" className="block text-sm font-medium text-orange-500">Last Name</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  className="input  w-full  text-blue-500 text-sm"
-                  defaultValue={user?.lastName}
-                  {...register('lastName', { required: 'firstName is required' })}
-                />
-                {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
-              </div>
-              <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium text-orange-500">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  disabled
-                  className="input input-bordered w-full bg-gray-900 border-gray-600 text-white"
-                  defaultValue={user?.email}
-                  {...register('email', { required: 'Email is required' })}
-                />
-                {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-              </div>
-              
-              <div className="flex justify-end">
-                <button onClick={handleModalToggle} className=" btn mr-2 btn-error">
-                  <FaTimes /> Cancel
-                </button>
-                {/* <button type="submit" className="btn btn-primary" disabled={isLoading}> */}
-                <button type="submit" className="btn btn-primary" >                 
-                  <SaveIcon /> Save Profile  {/* {isLoading ? 'Updating...' : 'Update Profile'} */}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Last Name</label>
+              <input
+                type="text"
+                name="lastName"
+                className="w-full border px-3 py-2 rounded text-gray-800"
+                value={formData.lastName}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <input
+                type="email"
+                name="email"
+                className="w-full border px-3 py-2 rounded bg-gray-100 text-gray-800"
+                value={formData.email}
+                onChange={handleChange}
+                disabled
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">New Password (optional)</label>
+              <input
+                type="password"
+                name="password"
+                className="w-full border px-3 py-2 rounded text-gray-800"
+                value={formData.password || ''}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Phone</label>
+              <input
+                type="text"
+                name="contactPhone"
+                className="w-full border px-3 py-2 rounded text-gray-800"
+                value={formData.contactPhone}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Address</label>
+              <textarea
+                name="address"
+                className="w-full border px-3 py-2 rounded text-gray-800"
+                value={formData.address}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                type="submit"
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Save Changes
+              </button>
+              <button
+                type="button"
+                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                onClick={() => setShowForm(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </>
       )}
     </div>
   );
 };
 
-export default UserProfile;
+export default MyProfile;

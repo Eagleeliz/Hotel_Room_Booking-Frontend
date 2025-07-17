@@ -27,22 +27,24 @@ const onSubmit = async (data: userLoginForm) => {
     const res = await loginUser(data).unwrap();
     toast.success("Login successful", { id: loadingToastId });
 
+        localStorage.setItem("token", res.token);
+
     // Convert backend format to expected frontend shape
     const user = {
       id: res.userId,
       email: res.email,
       firstName: res.firstName,
       lastName: res.lastName,
-      userType: res.role,
+      role: res.role,
       contactPhone: res.contactPhone,
       address: res.address
     };
 
-    dispatch(setCredentials({ user, token: res.token, userType: user.userType }));
+    dispatch(setCredentials({ user, token: res.token}));
 
 
     // Redirect based on role
-    if (user.userType === "admin") {
+    if (user.role === "admin") {
       navigate("/admindashboard");
     } else {
       navigate("/dashboard");
@@ -62,9 +64,14 @@ const onSubmit = async (data: userLoginForm) => {
      <Toaster richColors position="top-right"/>
      <Navbar/>
 
-    <section className="w-screen min-h-screen flex items-center justify-center bg-rose-50 px-4">
-      <div className="bg-white rounded-2xl shadow-md w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 overflow-hidden">
-        
+  <section className="w-screen min-h-screen bg-rose-50 px-4 pt-15">
+  <div className="bg-white rounded-xl shadow-md 
+    w-full max-w-[1000px] min-h-[65vh] 
+    grid grid-cols-1 md:grid-cols-2 
+    overflow-hidden px-6 py-6 mx-auto items-center">
+
+
+
         {/* Left Side Image */}
         <div className="hidden md:block">
           <img

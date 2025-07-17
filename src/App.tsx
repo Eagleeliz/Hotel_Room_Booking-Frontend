@@ -1,4 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
 import "./App.css";
 
 // Public pages
@@ -10,14 +12,13 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Hotels from "./pages/Hotels";
 
-
 // Protected components and layouts
 import ProtectedRoute from "./components/ProtectedRoute";
-import Dashboard from "./pages/Dashboard"; // User dashboard wrapper
-import AdminDashboard from "./pages/AdminDashboard"; // Admin dashboard wrapper
+import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
 // User dashboard pages
-import Analytics from "./dashboard/Analytics";
+import UserDashboard from "./dashboard/MyDashboard";
 import MyBooking from "./dashboard/MyBooking";
 import { MyPayments } from "./dashboard/MyPayments";
 import SupportTicket from "./dashboard/SupportTicket";
@@ -34,7 +35,6 @@ import AllPayments from "./components/AdminDashboard/AllPayments";
 import RoomsPage from "./pages/RoomsPage";
 
 const router = createBrowserRouter([
-  // Public routes
   {
     path: "/",
     element: <Home />,
@@ -61,11 +61,9 @@ const router = createBrowserRouter([
     element: <Hotels />,
   },
   {
-  path: "/hotels/:hotelId/rooms",
-  element: <RoomsPage />,
-},
-
-  // ✅ User Dashboard (protected)
+    path: "/hotels/:hotelId/rooms",
+    element: <RoomsPage />,
+  },
   {
     path: "/dashboard",
     element: (
@@ -74,7 +72,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <Analytics /> },
+      { index: true, element: <UserDashboard /> },
       { path: "orders", element: <MyBooking /> },
       { path: "payments", element: <MyPayments /> },
       { path: "support-tickets", element: <SupportTicket /> },
@@ -82,12 +80,10 @@ const router = createBrowserRouter([
       { path: "logout", element: <LogOut /> },
     ],
   },
-
-  // Admin Dashboard 
   {
     path: "/admindashboard",
     element: (
-      <ProtectedRoute >
+      <ProtectedRoute>
         <AdminDashboard />
       </ProtectedRoute>
     ),
@@ -97,16 +93,21 @@ const router = createBrowserRouter([
       { path: "users", element: <AllUsers /> },
       { path: "hotels", element: <AdminHotels /> },
       { path: "all-bookings", element: <AllBookings /> },
-      { path: "my-bookings", element: <MyBooking /> }, // Optional if admin has bookings
+      { path: "my-bookings", element: <MyBooking /> },
       { path: "my-payments", element: <MyPayments /> },
-        { path: "all-payments", element: <AllPayments /> },
+      { path: "all-payments", element: <AllPayments /> },
       { path: "profile", element: <AdminProfile /> },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
+  );
 }
 
 export default App;
