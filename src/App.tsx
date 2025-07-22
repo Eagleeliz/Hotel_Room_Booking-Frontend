@@ -26,13 +26,14 @@ import MyProfile from "./dashboard/MyProfile";
 import LogOut from "./dashboard/LogOut";
 
 // Admin dashboard pages
-import AllUsers from "./components/AdminDashboard/AllUsers";
+import {AllUsers} from "./components/AdminDashboard/AllUsers";
 import AllBookings from "./components/AdminDashboard/AllBookings";
 import AdminHotels from "./components/AdminDashboard/Hotels";
 import AdminAnalytics from "./components/AdminDashboard/Analytics";
 import AdminProfile from "./components/AdminDashboard/MyProfile";
 import AllPayments from "./components/AdminDashboard/AllPayments";
 import RoomsPage from "./pages/RoomsPage";
+import RoomsManagerPage from "./pages/RoomsManagerPage";
 
 const router = createBrowserRouter([
   {
@@ -90,6 +91,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <AdminAnalytics /> },
       { path: "analytics", element: <AdminAnalytics /> },
+      { path: "hotels/:hotelId/rooms", element: <RoomsManagerPage/> },
       { path: "users", element: <AllUsers /> },
       { path: "hotels", element: <AdminHotels /> },
       { path: "all-bookings", element: <AllBookings /> },

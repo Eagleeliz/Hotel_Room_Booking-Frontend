@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   TrendingUpIcon,
   SquareUserRound,
@@ -13,67 +13,90 @@ import {
   FaCalendarCheck,
 } from "react-icons/fa";
 
+// Active and hover styles
+const navItemClass = ({ isActive }: { isActive: boolean }) =>
+  `flex items-center px-4 py-3 rounded-md transition-colors duration-200 gap-3 text-lg
+   ${isActive ? "bg-rose-300 text-red-600 font-semibold" : "text-gray-800 hover:bg-pink-50 hover:text-rose-600"}`;
+
 export const AdminSideNav = () => {
   return (
- <ul className="menu bg-rose-100 text-gray-700 shadow-lg h-full font-semibold p-4 space-y-3">
+    <ul className="space-y-2">
 
       <li>
-        <Link to="/admindashboard/analytics" className="hover:bg-orange-100 rounded-md px-2 py-2 flex items-center">
-          <TrendingUpIcon className="text-yellow-500 mr-2" />
-          Analytics
-        </Link>
-      </li>
-      <li>
-        <Link to="/admindashboard/hotels" className="hover:bg-orange-100 rounded-md px-2 py-2 flex items-center">
-          <FaHotel className="text-pink-500 mr-2" />
-        All  Hotels
-        </Link>
-      </li>
-      <li>
-        <Link to="/admindashboard/all-bookings" className="hover:bg-orange-100 rounded-md px-2 py-2 flex items-center">
-          <FaBed className="text-pink-500 mr-2" />
-          All Bookings
-        </Link>
-      </li>
-   
-      <li>
-        <Link to="/admindashboard/all-payments" className="hover:bg-orange-100 rounded-md px-2 py-2 flex items-center">
-          <FaCreditCard className="text-rose-600 mr-2" />
-         All Payments
-        </Link>
-      </li>
-      <li>
-        <Link to="/admindashboard/users" className="hover:bg-orange-100 rounded-md px-2 py-2 flex items-center">
-          <FaUsers className="text-pink-500 mr-2" />
-          All Users
-        </Link>
+        <NavLink to="/admindashboard/analytics" className={navItemClass}>
+          {({ isActive }) => (
+            <>
+              <TrendingUpIcon className={`w-6 h-6 ${isActive ? "text-red-600" : "text-yellow-500"}`} />
+              Analytics
+            </>
+          )}
+        </NavLink>
       </li>
 
-         <li>
-        <Link to="/admindashboard/my-bookings" className="hover:bg-orange-100 rounded-md px-2 py-2 flex items-center">
-          <FaCalendarCheck className="text-rose-600 mr-2" />
-          My Bookings
-        </Link>
-      </li>
-    
-       <li>
-        <Link to="/admindashboard/my-payments" className="hover:bg-orange-100 rounded-md px-2 py-2 flex items-center">
-          <FaCreditCard className="text-rose-600 mr-2" />
-          My Payments
-        </Link>
-      </li>
-        <li>
-        <Link to="/admindashboard/profile" className="hover:bg-orange-100 rounded-md px-2 py-2 flex items-center">
-          <SquareUserRound className="text-pink-500 mr-2" />
-          My Profile
-        </Link>
-      </li>
       <li>
-        <Link to="#" className="hover:bg-orange-100 rounded-md px-2 py-2 flex items-center">
-          <LogOut className="text-red-500 mr-2" />
-          Logout
-        </Link>
+        <NavLink to="/admindashboard/hotels" className={navItemClass}>
+          {({ isActive }) => (
+            <>
+              <FaHotel className={`w-6 h-6 ${isActive ? "text-red-600" : "text-pink-500"}`} />
+              All Hotels
+            </>
+          )}
+        </NavLink>
       </li>
+
+      <li>
+        <NavLink to="/admindashboard/all-bookings" className={navItemClass}>
+          {({ isActive }) => (
+            <>
+              <FaBed className={`w-6 h-6 ${isActive ? "text-red-600" : "text-pink-500"}`} />
+              All Bookings
+            </>
+          )}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink to="/admindashboard/all-payments" className={navItemClass}>
+          {({ isActive }) => (
+            <>
+              <FaCreditCard className={`w-6 h-6 ${isActive ? "text-red-600" : "text-rose-600"}`} />
+              All Payments
+            </>
+          )}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink to="/admindashboard/users" className={navItemClass}>
+          {({ isActive }) => (
+            <>
+              <FaUsers className={`w-6 h-6 ${isActive ? "text-red-600" : "text-pink-500"}`} />
+              All Users
+            </>
+          )}
+        </NavLink>
+      </li>
+
+
+
+      <li>
+        <NavLink to="/admindashboard/profile" className={navItemClass}>
+          {({ isActive }) => (
+            <>
+              <SquareUserRound className={`w-6 h-6 ${isActive ? "text-red-600" : "text-pink-500"}`} />
+              My Profile
+            </>
+          )}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink to="/logout" className={navItemClass}>
+          <LogOut className="w-6 h-6 text-red-600" />
+          <span className="text-red-600">Logout</span>
+        </NavLink>
+      </li>
+
     </ul>
   );
 };

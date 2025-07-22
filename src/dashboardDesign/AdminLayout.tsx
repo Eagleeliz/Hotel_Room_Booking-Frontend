@@ -1,22 +1,28 @@
 import { Outlet } from 'react-router-dom';
-import Card from './Card';
 import { AdminSideNav } from './AdminSidenav';
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export const AdminLayout = () => {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-yellow-50 font-sans text-gray-700">
-      {/* Sidebar */}
-    <aside className="min-w-[12%] h-screen border-r border-gray-200 shadow-md bg-rose-100">
-  <AdminSideNav />
-</aside>
+      {/* Fixed Navbar */}
+      <div className="fixed top-0 left-0 w-full z-50">
+        <Navbar />
+      </div>
 
+      {/* Fixed Sidebar below navbar */}
+       <aside className="fixed top-[85px] left-0 w-64 h-[calc(100vh-72px)] bg-rose-100 border-r border-rose-200 shadow-md z-40 overflow-y-auto">
+        <AdminSideNav />
+      </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 overflow-y-auto">
-        <Card className="bg-white shadow-md rounded-xl">
+      <div className="ml-64 w-full">
+        <main className="min-h-[calc(100vh-72px)] px-6 pt-6 pb-16">
           <Outlet />
-        </Card>
-      </main>
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 };

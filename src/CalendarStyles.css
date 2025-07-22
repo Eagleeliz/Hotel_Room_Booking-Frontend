@@ -1,0 +1,29 @@
+.react-calendar {
+  width: 100%;
+  height: 100%;
+  border: none;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #4B5563; /* Tailwind gray-700 */
+}
+
+.react-calendar__tile {
+  padding: 0.5rem 0;
+  background: none !important;
+  color: #4B5563 !important;
+}
+
+.react-calendar__tile--now {
+  background: #f43f5e !important; /* rose-500 */
+  color: #fff !important;
+  border-radius: 0.5rem;
+}
+
+.react-calendar__tile:enabled:hover {
+  background: #fbcfe8 !important; /* rose-100 */
+  color: #be123c !important; /* rose-700 */
+}
+
+.react-calendar__navigation button {
+  color: #4B5563;
+}

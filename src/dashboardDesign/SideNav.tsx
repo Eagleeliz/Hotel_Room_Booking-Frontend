@@ -14,7 +14,8 @@ export const SideNav = () => {
      ${isActive ? "bg-rose-300 text-red-600 font-semibold" : "text-gray-800 hover:bg-pink-50 hover:text-rose-600"}`;
 
   return (
-    <ul className="menu bg-rose-100 shadow-md w-66 min-h-full p-2 space-y-2">
+    <ul className="space-y-2">
+
       <li>
         <NavLink to="/dashboard" end className={navItemClass}>
           {({ isActive }) => (

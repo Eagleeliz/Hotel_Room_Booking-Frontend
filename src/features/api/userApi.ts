@@ -1,5 +1,6 @@
 // src/features/api/userApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { User } from '../../types/Types';
 
 export const userApi = createApi({
   reducerPath: 'userApi',
@@ -45,10 +46,11 @@ export const userApi = createApi({
       invalidatesTags: ['user'],
     }),
 
-    getAllUsersProfiles: builder.query({
-      query: () => 'users',
-      providesTags: ['users'],
-    }),
+getAllUsersProfiles: builder.query<User[], void>({
+  query: () => 'users',
+  providesTags: ['users'],
+}),
+
 
     getUserById: builder.query({
       query: (user_id: number) => `users/${user_id}`,

@@ -31,10 +31,11 @@ export const bookingApi = createApi({
     }),
 
     // ✅ GET: Bookings by user (returns full user object with bookings)
-getBookingsByUserId: builder.query<Booking[], number>({
+getBookingsByUserId: builder.query<UserWithBookings, number>({
   query: (userId) => `booking/user/${userId}`,
   providesTags: ['Bookings'],
 }),
+
 
     // ✅ GET: Single booking
     getBookingById: builder.query<Booking, number>({
