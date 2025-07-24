@@ -33,7 +33,9 @@ import AdminAnalytics from "./components/AdminDashboard/Analytics";
 import AdminProfile from "./components/AdminDashboard/MyProfile";
 import AllPayments from "./components/AdminDashboard/AllPayments";
 import RoomsPage from "./pages/RoomsPage";
+import SupportTicktes from "./components/AdminDashboard/SupportTickets";
 import RoomsManagerPage from "./pages/RoomsManagerPage";
+import SupportTickets from "./components/AdminDashboard/SupportTickets";
 
 const router = createBrowserRouter([
   {
@@ -99,6 +101,8 @@ const router = createBrowserRouter([
       { path: "my-payments", element: <MyPayments /> },
       { path: "all-payments", element: <AllPayments /> },
       { path: "profile", element: <AdminProfile /> },
+         { path: "support-tickets", element: <SupportTickets /> },
+
     ],
   },
 ]);

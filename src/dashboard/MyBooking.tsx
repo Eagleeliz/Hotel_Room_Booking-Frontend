@@ -4,21 +4,28 @@ import type { RootState } from "../app/store";
 import { useGetBookingsByUserIdQuery } from "../features/api/BookingApi";
 import { Link } from "react-router-dom";
 import { FiFilter } from "react-icons/fi";
+import type { Booking } from "../types/Types";
 
 const MyBooking: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
+  console.log("Logged-in user:", user); // Debug: check user shape
+
+  const userId = user?.userId;
+
   const [filter, setFilter] = useState<"all" | "upcoming" | "past">("all");
 
   const {
-    data: bookings,
+    data: userData,
     isLoading,
     isError,
     error,
-  } = useGetBookingsByUserIdQuery(user?.id!, {
-    skip: !user?.id,
+  } = useGetBookingsByUserIdQuery(userId!, {
+    skip: !userId,
   });
 
-  if (!user?.id) {
+  const bookings: Booking[] = userData?.bookings ?? [];
+
+  if (!userId) {
     return <p className="p-4 text-red-500">Please log in to view your bookings.</p>;
   }
 
@@ -153,4 +160,3 @@ const MyBooking: React.FC = () => {
 };
 
 export default MyBooking;
-

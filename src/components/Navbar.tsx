@@ -15,6 +15,7 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(clearCredentials());
+    
     navigate("/");
   };
 

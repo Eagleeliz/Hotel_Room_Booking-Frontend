@@ -1,34 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGetMyProfileQuery } from "../features/api/userApi";
 import { useGetBookingsByUserIdQuery } from "../features/api/BookingApi";
 import { FiCalendar, FiDollarSign, FiHelpCircle } from "react-icons/fi";
+import { getMyTickets } from "../features/api/SupportTicketApi";
 import { motion } from "framer-motion";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../CalendarStyles.css";
 import { Link } from "react-router-dom";
+import type { Booking } from "../types/Types";
 
 const MyDashboard = () => {
   const { data: user, isLoading: userLoading } = useGetMyProfileQuery();
   const { data: bookings = [], isLoading: bookingsLoading } = useGetBookingsByUserIdQuery(user?.userId);
-
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  // State for ticket count
+  const [supportTicketsCount, setSupportTicketsCount] = useState(0);
+
+  // Fetch support tickets count
+  useEffect(() => {
+    const fetchTickets = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const tickets = await getMyTickets(token);
+        setSupportTicketsCount(tickets.length);
+      } catch (error) {
+        console.error("Failed to fetch support tickets", error);
+        setSupportTicketsCount(0);
+      }
+    };
+
+    fetchTickets();
+  }, []);
 
   if (userLoading || bookingsLoading) {
     return <div className="text-center mt-10 text-rose-500">Loading dashboard...</div>;
   }
 
-  // Compute total payments and booking stats
-  const totalPayments = bookings.reduce((sum, booking) => sum + parseFloat(booking.totalAmount || "0"), 0);
-  const bookingCount = bookings.length;
-  const supportTicketsCount = 2;
+  const typedBookings = bookings as Booking[];
+  const totalPayments = typedBookings.reduce(
+    (sum, booking) => sum + parseFloat(booking.totalAmount || "0"),
+    0
+  );
 
-  // Filter for upcoming bookings
+  const bookingCount = typedBookings.length;
+
   const now = new Date();
-  const upcomingBookings = bookings
+  const upcomingBookings = typedBookings
     .filter((booking) => new Date(booking.checkInDate) > now)
     .sort((a, b) => new Date(a.checkInDate).getTime() - new Date(b.checkInDate).getTime())
-    .slice(0, 3); // Show only top 3 upcoming bookings
+    .slice(0, 3);
 
   const fadeIn = {
     hidden: { opacity: 0, y: 30 },
@@ -36,8 +60,7 @@ const MyDashboard = () => {
   };
 
   return (
-  <div className="p-6 md:p-10 min-h-screen">
-
+    <div className="p-6 md:p-10 min-h-screen">
       {/* Welcome Card */}
       <motion.div
         variants={fadeIn}
@@ -61,6 +84,7 @@ const MyDashboard = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        {/* Bookings */}
         <motion.div
           variants={fadeIn}
           initial="hidden"
@@ -75,6 +99,7 @@ const MyDashboard = () => {
           <p className="text-3xl font-bold text-gray-800">{bookingCount}</p>
         </motion.div>
 
+        {/* Payments */}
         <motion.div
           variants={fadeIn}
           initial="hidden"
@@ -89,6 +114,7 @@ const MyDashboard = () => {
           <p className="text-3xl font-bold text-gray-800">Ksh {totalPayments.toFixed(2)}</p>
         </motion.div>
 
+        {/* Tickets */}
         <motion.div
           variants={fadeIn}
           initial="hidden"
@@ -104,7 +130,7 @@ const MyDashboard = () => {
         </motion.div>
       </div>
 
-      {/* Calendar and Upcoming Bookings Section */}
+      {/* Calendar and Upcoming Bookings */}
       <motion.div
         variants={fadeIn}
         initial="hidden"
@@ -136,7 +162,8 @@ const MyDashboard = () => {
                 >
                   <h3 className="font-semibold text-rose-800">{booking.room.hotel.name}</h3>
                   <p className="text-sm text-gray-700">
-                    {booking.room.roomType} • {new Date(booking.checkInDate).toLocaleDateString()} —{" "}
+                    {booking.room.roomType} •{" "}
+                    {new Date(booking.checkInDate).toLocaleDateString()} —{" "}
                     {new Date(booking.checkOutDate).toLocaleDateString()}
                   </p>
                 </div>
@@ -144,12 +171,11 @@ const MyDashboard = () => {
             </div>
           )}
 
-          {/* View All Button */}
           <Link
             to="/dashboard/orders?filter=upcoming"
-            className="mt-6 inline-block text-center bg-rose-500 hover:bg-rose-600 !text-white py-2 px-4 rounded-md text-sm font-medium transition"
+            className="mt-6 inline-block text-center bg-rose-500 hover:bg-rose-600 text-white py-2 px-4 rounded-md text-sm font-medium transition"
           >
-            View All  Bookings
+            View All Bookings
           </Link>
         </div>
       </motion.div>

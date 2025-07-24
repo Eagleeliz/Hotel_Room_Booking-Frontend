@@ -18,7 +18,8 @@ export const AdminLayout = () => {
 
       {/* Main Content */}
       <div className="ml-64 w-full">
-        <main className="min-h-[calc(100vh-72px)] px-6 pt-6 pb-16">
+       <main className="min-h-[calc(100vh-72px)] px-6 pt-[100px] pb-16">
+
           <Outlet />
         </main>
         <Footer />

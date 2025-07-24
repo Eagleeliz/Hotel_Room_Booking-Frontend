@@ -77,6 +77,18 @@ export const AdminSideNav = () => {
         </NavLink>
       </li>
 
+      
+      <li>
+        <NavLink to="/admindashboard/support-tickets" className={navItemClass}>
+          {({ isActive }) => (
+            <>
+              <FaUsers className={`w-6 h-6 ${isActive ? "text-red-600" : "text-pink-500"}`} />
+              Support Tickets
+            </>
+          )}
+        </NavLink>
+      </li>
+
 
 
       <li>

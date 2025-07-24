@@ -20,30 +20,37 @@ const Login = () => {
  const dispatch = useDispatch();
  const [loginUser, {isLoading}] = userApi.useLoginUserMutation()
   const {register,handleSubmit,formState:{errors}}=useForm<userLoginForm>()
-const onSubmit = async (data: userLoginForm) => {
+
+  const onSubmit = async (data: userLoginForm) => {
   const loadingToastId = toast.loading("Logging..");
 
   try {
     const res = await loginUser(data).unwrap();
+    console.log("Login response:", res);
+
     toast.success("Login successful", { id: loadingToastId });
 
-        localStorage.setItem("token", res.token);
+    // ✅ Clear previous user/token before setting new ones
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
 
-    // Convert backend format to expected frontend shape
+    // ✅ Create new user object with correct userId
     const user = {
-      id: res.userId,
+      userId: res.userId,
       email: res.email,
       firstName: res.firstName,
       lastName: res.lastName,
       role: res.role,
       contactPhone: res.contactPhone,
-      address: res.address
+      address: res.address,
+      createdAt: res.createdAt,
+      updatedAt: res.updatedAt
     };
 
-    dispatch(setCredentials({ user, token: res.token}));
+    // ✅ Save new user in Redux + localStorage
+    dispatch(setCredentials({ user, token: res.token }));
 
-
-    // Redirect based on role
+    // ✅ Redirect
     if (user.role === "admin") {
       navigate("/admindashboard");
     } else {
@@ -56,6 +63,7 @@ const onSubmit = async (data: userLoginForm) => {
     toast.dismiss(loadingToastId);
   }
 };
+
 
 
 

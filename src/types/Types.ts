@@ -7,8 +7,8 @@ export interface User {
   address?: string | null;
   contactPhone?: string | null;
   role: 'user' | 'admin';
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   bookingCount?: number;
 }
 
@@ -17,6 +17,16 @@ export interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+}
+export interface Ticket {
+  ticketId: number;
+  subject: string;
+  description: string;
+  status: 'Open' | 'Pending' | 'Resolved' | 'Closed';
+  createdAt: string;
+  updatedAt: string;
+  userId: number;
+  user?: User; // optional in case some tickets only return userId
 }
 
 // ✅ Hotel structure (used across app and API)
