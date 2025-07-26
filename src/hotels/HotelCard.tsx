@@ -3,7 +3,6 @@ import { MdLocationOn } from "react-icons/md";
 import { Link } from 'react-router-dom';
 
 interface HotelCardProps {
-    
   hotelId: number;
   name: string;
   hotelImg: string;
@@ -26,23 +25,17 @@ const HotelCard: React.FC<HotelCardProps> = ({
   address,
 }) => {
   return (
-   <div className="relative 
-  w-[27rem] h-[24rem] 
-  md:w-[26rem] md:h-[22rem] 
-  lg:w-[28rem] lg:h-[24rem] 
-  rounded-xl overflow-hidden group shadow-md 
-  hover:shadow-xl transition-shadow duration-300 hover:scale-[1.02]">
-
-
+    <div className="relative w-full max-w-md h-[24rem] rounded-xl overflow-hidden group shadow-md hover:shadow-xl transition-transform duration-300 hover:scale-[1.02]">
+      
       {/* Hotel Image with subtle blur & darkening */}
-      <img
-        src={hotelImg}
-        alt={name}
-        onError={(e) => {
-          e.currentTarget.src = fallbackImage;
-        }}
-        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 group-hover:blur-[2px] group-hover:brightness-90"
-      />
+          <img
+  src={hotelImg}
+  alt={name}
+  onError={(e) => {
+    e.currentTarget.src = fallbackImage;
+  }}
+  className="w-full h-full object-cover transition-transform duration-300 scale-100 blur-0 brightness-100 sm:group-hover:scale-105 sm:group-hover:blur-[2px] sm:group-hover:brightness-90 sm:hover:brightness-90 sm:hover:blur-[2px]"
+/>
 
       {/* Rating Badge */}
       <div className="absolute top-4 right-4 bg-black/60 text-white text-sm font-semibold px-3 py-1 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
@@ -55,7 +48,8 @@ const HotelCard: React.FC<HotelCardProps> = ({
       </div>
 
       {/* Hover Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex flex-col justify-center text-center px-6 py-8 space-y-2">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent text-white opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 z-20 flex flex-col justify-center text-center px-6 py-8 space-y-2">
+
         <h2 className="text-2xl font-extrabold tracking-wide">{name}</h2>
 
         <div className="flex justify-center items-center gap-2 text-lg text-white">
@@ -67,13 +61,12 @@ const HotelCard: React.FC<HotelCardProps> = ({
         <p className="text-lg italic">{category}</p>
 
         {/* View Rooms Button */}
-       <Link
-  to={`/hotels/${hotelId}/rooms`}
-  className="mt-4 inline-block bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 !text-blue-200 no-underline font-semibold px-6 py-2 rounded-full hover:from-rose-400 hover:to-pink-400 transition-all duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-pink-300"
->
-  View Rooms
-</Link>
-
+        <Link
+          to={`/hotels/${hotelId}/rooms`}
+          className="mt-4 inline-block bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 !text-blue-200 no-underline font-semibold px-6 py-2 rounded-full hover:from-rose-400 hover:to-pink-400 transition-all duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-pink-300"
+        >
+          View Rooms
+        </Link>
       </div>
     </div>
   );

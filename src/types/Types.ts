@@ -102,11 +102,56 @@ export interface Booking {
 }
 
 // ✅ Payment details
-export interface Payment {
-  paymentId: number;
+export type Payment = {
+  paymentId?: string;
+  bookingId: string;
+  amount: number;
+  paymentStatus: "Pending" | "Completed" | "Failed";
+  paymentDate?: string;
+  createdAt?: string;
+  transactionId?: string;
+  booking?: {
+    checkInDate: string;
+    checkOutDate: string;
+    room?: {
+      roomType: string;
+      pricePerNight: string;
+      hotel?: {
+        hotelName: string;
+      };
+    };
+  };
+};
+
+export type PaymentWithBooking = {
   bookingId: number;
-  amountPaid: string;
-  paymentMethod: string;
-  paymentStatus: 'Pending' | 'Paid' | 'Failed';
-  createdAt: string;
-}
+  checkInDate: string;
+  checkOutDate: string;
+  bookingStatus: string;
+  totalAmount: string;
+  room: {
+    roomType: string;
+    hotelId: number;
+    pricePerNight: string;
+    hotel?: {
+      name: string;
+    };
+  };
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  payment: {
+    paymentId: number;
+    amount: string;
+    paymentStatus: "Pending" | "Completed" | "Failed";
+    paymentDate: string;
+    transactionId: string | null;
+    createdAt: string;
+    paymentMethod: string;
+  };
+};
+
+
+

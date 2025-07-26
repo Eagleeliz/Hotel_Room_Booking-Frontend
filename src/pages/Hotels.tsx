@@ -66,21 +66,22 @@ const Hotels: React.FC = () => {
         {hotelsToDisplay.length === 0 ? (
           <div className="p-4 text-gray-600 text-center">No hotels found.</div>
         ) : (
-        <div className="mx-auto w-full max-w-[1500px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 px-4 justify-items-center">
+       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-12 max-w-7xl mx-auto px-4">
+  {hotelsToDisplay.map((hotel) => (
+    <div key={hotel.hotelId} className="flex justify-center">
+      <HotelCard
+        hotelId={hotel.hotelId}
+        name={hotel.name}
+        hotelImg={hotel.hotelImg || fallbackImage}
+        location={hotel.location}
+        rating={hotel.rating}
+        category={hotel.category}
+        address={hotel.address}
+      />
+    </div>
+  ))}
+</div>
 
-            {hotelsToDisplay.map((hotel) => (
-              <HotelCard
-                key={hotel.hotelId}
-                hotelId={hotel.hotelId}
-                name={hotel.name}
-                hotelImg={hotel.hotelImg || fallbackImage}
-                location={hotel.location}
-                rating={hotel.rating}
-                category={hotel.category}
-                address={hotel.address}
-              />
-            ))}
-          </div>
         )}
       </section>
 

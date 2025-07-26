@@ -1,6 +1,6 @@
 // components/Footer.tsx
 import React from 'react';
-import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
+import { FaFacebookF, FaInstagram,  FaLinkedinIn, FaGithub } from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   return (
@@ -18,8 +18,8 @@ const Footer: React.FC = () => {
         <div>
           <h4 className="text-xl font-semibold mb-2">Quick Links</h4>
           <ul className="space-y-1">
-            <li><a href="/rooms" className="hover:text-orange-500">View Hotels</a></li>
-            <li><a href="/booking" className="hover:text-orange-500">About us</a></li>
+            <li><a href="/hotels" className="hover:text-orange-500">View Hotels</a></li>
+            <li><a href="/about" className="hover:text-orange-500">About us</a></li>
             <li><a href="/contact" className="hover:text-orange-500">Contact Us</a></li>
             <li><a href="/gallery" className="hover:text-orange-500"></a></li>
           </ul>
@@ -29,26 +29,26 @@ const Footer: React.FC = () => {
         <div>
           <h4 className="text-xl font-semibold mb-2">Contact</h4>
           <p>Email: goldenhomehotels.co.ke</p>
-          <p>Phone: +254 700 123 456</p>
-          <p>Location: Nanyuki, Laikipia County</p>
+          <p>Phone: +254 705 135 534</p>
+          <p>Location: Nyahururu, Laikipia County</p>
         </div>
 
         {/* Socials */}
         <div>
           <h4 className="text-xl font-semibold mb-2">Follow Us</h4>
           <div className="flex space-x-4 mt-2">
-            <a href="https://facebook.com" className="text-gray-600 hover:text-orange-500">
+              <a href="https://www.linkedin.com/in/elizabeth-wanjiku-0b2725294/" className="text-gray-600 hover:text-orange-500">
+              <FaLinkedinIn size={20} />
+            </a>
+                   <a href="https://github.com/Eagleeliz" className="text-gray-600 hover:text-orange-500" target="_blank" rel="noopener noreferrer">
+             <FaGithub size={20} />
+          </a>
+            <a href="https://web.facebook.com/liz.ndungu.776299" className="text-gray-600 hover:text-orange-500">
               <FaFacebookF size={20} />
             </a>
             <a href="https://instagram.com" className="text-gray-600 hover:text-orange-500">
               <FaInstagram size={20} />
-            </a>
-            <a href="https://twitter.com" className="text-gray-600 hover:text-orange-500">
-              <FaTwitter size={20} />
-            </a>
-            <a href="https://linkedin.com" className="text-gray-600 hover:text-orange-500">
-              <FaLinkedinIn size={20} />
-            </a>
+            </a>    
           </div>
         </div>
       </div>

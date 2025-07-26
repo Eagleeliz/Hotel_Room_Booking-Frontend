@@ -31,10 +31,13 @@ export const bookingApi = createApi({
     }),
 
     // ✅ GET: Bookings by user (returns full user object with bookings)
-getBookingsByUserId: builder.query<UserWithBookings, number>({
+getBookingsByUserId: builder.query<Booking[], number>({
   query: (userId) => `booking/user/${userId}`,
   providesTags: ['Bookings'],
 }),
+
+
+
 
 
     // ✅ GET: Single booking
@@ -66,7 +69,7 @@ getBookingsByUserId: builder.query<UserWithBookings, number>({
     }),
 
     // ✅ POST: Create booking
-    createBooking: builder.mutation<Booking, Partial<Booking>>({
+    createBooking: builder.mutation({
       query: (newBooking) => ({
         url: `booking`,
         method: 'POST',

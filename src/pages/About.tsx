@@ -20,7 +20,7 @@ const About: React.FC = () => {
         <hr className="border-pink-300 w-24 mx-auto mb-10" />
 
         {/* Card 1 */}
-        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl shadow-xl hover:shadow-pink-500/50 transition-shadow duration-300 mb-12 max-w-6xl mx-auto overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl shadow-xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:ring-2 hover:ring-pink-400/50 mb-12 max-w-6xl mx-auto overflow-hidden">
           <div className="md:w-1/2 p-6 md:p-10 text-center md:text-left">
             <h2 className="text-3xl md:text-4xl font-bold text-pink-600 mb-6 tracking-wide">
               ✨ Welcome to <span className="text-gray-700">Golden Home Hotels</span> ✨
@@ -37,7 +37,7 @@ const About: React.FC = () => {
         </div>
 
         {/* Card 2 */}
-        <div className="flex flex-col md:flex-row-reverse items-center bg-white rounded-xl shadow-xl hover:shadow-pink-500/50 transition-shadow duration-300 mb-12 max-w-6xl mx-auto overflow-hidden">
+        <div className="flex flex-col md:flex-row-reverse items-center bg-white rounded-xl shadow-xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:ring-2 hover:ring-pink-400/50 mb-12 max-w-6xl mx-auto overflow-hidden">
           <div className="md:w-1/2 p-6 md:p-10 text-center md:text-left">
             <h2 className="text-2xl font-semibold text-pink-500 mb-4">Our Mission</h2>
             <p className="text-gray-700 leading-relaxed">
@@ -52,7 +52,7 @@ const About: React.FC = () => {
         </div>
 
         {/* Card 3 */}
-        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl shadow-xl hover:shadow-pink-500/50 transition-shadow duration-300 mb-12 max-w-6xl mx-auto overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl shadow-xl hover:shadow-pink-500/50 transition-all duration-300 transform hover:scale-105 active:scale-95 hover:ring-2 hover:ring-pink-400/50 mb-12 max-w-6xl mx-auto overflow-hidden">
           <div className="md:w-1/2 p-6 md:p-10 text-center md:text-left">
             <h2 className="text-2xl font-semibold text-pink-500 mb-4">Our Vision</h2>
             <p className="text-gray-700 leading-relaxed">

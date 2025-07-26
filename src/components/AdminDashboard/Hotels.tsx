@@ -9,11 +9,16 @@ import type { Hotel } from "../../types/Types";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import withReactContent from "sweetalert2-react-content";
+import axios from "axios";
 
 const MySwal = withReactContent(Swal);
 
 const Hotels = () => {
-  const navigate = useNavigate(); // ✅ added for navigation
+  // Cloudinary setup
+  const preset_key = "hotelsroomsystem";
+  const cloud_name = "do1chmnps";
+
+  const navigate = useNavigate();
   const { data: hotels, isLoading, isError, refetch } = useGetHotelsQuery();
   const [createHotel] = useCreateHotelMutation();
   const [updateHotel] = useUpdateHotelMutation();
@@ -133,7 +138,7 @@ const Hotels = () => {
             });
             setShowModal(true);
           }}
-          className="bg-gradient-to-r from-pink-500 to-red-500  text-white px-4 py-2 rounded"
+          className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-4 py-2 rounded"
         >
           + Add Hotel
         </button>
@@ -159,22 +164,9 @@ const Hotels = () => {
               <p><span className="font-semibold">Rating:</span> {hotel.rating ?? "N/A"}</p>
             </div>
             <div className="flex justify-between mt-4 gap-2">
-              <button onClick={() => handleEdit(hotel)}
-               className="bg-gradient-to-r from-red-500 to-red-500 text-white font-medium text-sm">
-                Edit
-              </button>
-              <button
-                onClick={() => hotel.hotelId && handleDelete(hotel.hotelId)}
-                className="bg-gradient-to-r from-pink-500 to-red-500 text-white font-medium text-sm"
-              >
-                Delete
-              </button>
-              <button
-                onClick={() => navigate(`/admindashboard/hotels/${hotel.hotelId}/rooms`)} // ✅ navigate to new page
-                className="bg-gradient-to-r from-pink-500 to-pink-500 text-white font-medium text-sm"
-              >
-                Rooms
-              </button>
+              <button onClick={() => handleEdit(hotel)} className="bg-red-500 text-white px-3 py-1 rounded text-sm">Edit</button>
+              <button onClick={() => hotel.hotelId && handleDelete(hotel.hotelId)} className="bg-pink-500 text-white px-3 py-1 rounded text-sm">Delete</button>
+              <button onClick={() => navigate(`/admindashboard/hotels/${hotel.hotelId}/rooms`)} className="bg-pink-600 text-white px-3 py-1 rounded text-sm">Rooms</button>
             </div>
           </div>
         ))}
@@ -184,79 +176,63 @@ const Hotels = () => {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
-            <h2 className="text-xl font-bold mb-4">
-              {editingHotel ? "Edit Hotel" : "Add Hotel"}
-            </h2>
+            <h2 className="text-xl font-bold mb-4">{editingHotel ? "Edit Hotel" : "Add Hotel"}</h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+              <input type="text" name="name" placeholder="Hotel Name" value={formData.name} onChange={handleChange} className="border p-2 rounded" required />
+              <input type="text" name="location" placeholder="Location" value={formData.location} onChange={handleChange} className="border p-2 rounded" required />
+              <input type="text" name="address" placeholder="Address" value={formData.address ?? ""} onChange={handleChange} className="border p-2 rounded" />
+              <input type="text" name="contactPhone" placeholder="Contact Phone" value={formData.contactPhone ?? ""} onChange={handleChange} className="border p-2 rounded" />
+              <input type="text" name="category" placeholder="Category" value={formData.category ?? ""} onChange={handleChange} className="border p-2 rounded" />
+              <input type="number" name="rating" placeholder="Rating" value={formData.rating ?? 0} onChange={handleChange} className="border p-2 rounded" />
+
+              {/* File Upload Input */}
               <input
-                type="text"
-                name="name"
-                placeholder="Hotel Name"
-                value={formData.name}
-                onChange={handleChange}
-                className="border p-2 rounded"
-                required
-              />
-              <input
-                type="text"
-                name="location"
-                placeholder="Location"
-                value={formData.location}
-                onChange={handleChange}
-                className="border p-2 rounded"
-                required
-              />
-              <input
-                type="text"
-                name="address"
-                placeholder="Address"
-                value={formData.address ?? ""}
-                onChange={handleChange}
-                className="border p-2 rounded"
-              />
-              <input
-                type="text"
-                name="contactPhone"
-                placeholder="Contact Phone"
-                value={formData.contactPhone ?? ""}
-                onChange={handleChange}
-                className="border p-2 rounded"
-              />
-              <input
-                type="text"
-                name="category"
-                placeholder="Category"
-                value={formData.category ?? ""}
-                onChange={handleChange}
-                className="border p-2 rounded"
-              />
-              <input
-                type="number"
-                name="rating"
-                placeholder="Rating"
-                value={formData.rating ?? 0}
-                onChange={handleChange}
-                className="border p-2 rounded"
-              />
-              <input
-                type="text"
-                name="hotelImg"
-                placeholder="Image URL"
-                value={formData.hotelImg ?? ""}
-                onChange={handleChange}
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  const cloudFormData = new FormData();
+                  cloudFormData.append("file", file);
+                  cloudFormData.append("upload_preset", preset_key);
+
+                  try {
+                    const response = await axios.post(
+                      `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
+                      cloudFormData
+                    );
+                    const imageUrl = response.data.secure_url;
+                    setFormData((prev) => ({ ...prev, hotelImg: imageUrl }));
+                    MySwal.fire("Success", "Image uploaded successfully", "success");
+                  } catch (err) {
+                    console.error("Image upload error", err);
+                    MySwal.fire("Error", "Image upload failed", "error");
+                  }
+                }}
                 className="border p-2 rounded col-span-2"
               />
-              <div className="col-span-2 flex justify-end gap-2">
+
+              {/* Preview */}
+              {formData.hotelImg && (
+                <img
+                  src={formData.hotelImg}
+                  alt="Preview"
+                  className="w-full h-40 object-cover rounded col-span-2"
+                />
+              )}
+
+              <div className="col-span-2 flex justify-end gap-2 mt-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-4 py-2 rounded"
+                  className="bg-gray-400 text-white px-4 py-2 rounded"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-red-500 to-red-500 text-white px-4 py-2 rounded"
+                  className="bg-red-500 text-white px-4 py-2 rounded"
                 >
                   {editingHotel ? "Update Hotel" : "Create Hotel"}
                 </button>

@@ -4,6 +4,7 @@ import Container from '../components/Container'
 import Footer from '../components/Footer'
 import HomeHero from '../Hero/HomeHero'
 import HotelTeaser from '../Hero/HotelTeaser'
+import Hero2 from '../Hero/Hero2'
 export const Home: React.FC = () => {
   return (
     <>
@@ -12,6 +13,7 @@ export const Home: React.FC = () => {
            </Container>
            <HomeHero/>
            <HotelTeaser/>
+           <Hero2/>
            <Footer/>
     </>
   )

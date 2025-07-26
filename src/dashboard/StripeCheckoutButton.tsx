@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
+import  {useCreateBookingMutation} from "../features/api/BookingApi";
 
 interface MyPaymentProps {
   roomId: number;
@@ -21,6 +22,8 @@ const StripeCheckoutButton: React.FC<MyPaymentProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [createBooking] = useCreateBookingMutation();
+
 
   const handleCheckout = async () => {
     setLoading(true);
@@ -28,22 +31,15 @@ const StripeCheckoutButton: React.FC<MyPaymentProps> = ({
 
     try {
       // ✅ Step 1: Create the booking directly as "Confirmed"
-      const bookingResponse = await axios.post('http://localhost:5000/api/booking', {
-        roomId,
-        userId,
-        checkInDate,
-        checkOutDate,
-        amount,
-        status: 'Confirmed', // 👈 ensure it's directly marked as confirmed
-      });
-
-      const booking = bookingResponse.data;
+      const bookingResponse = await createBooking({roomId, userId, checkInDate, checkOutDate,}).unwrap()
+      const booking = bookingResponse.booking;
+      console.log(booking)
 
       // ✅ Step 2: Initiate Stripe checkout session
       const stripeResponse = await axios.post(
         'http://localhost:5000/api/payments/create-checkout-session',
         {
-          bookingId: booking.id,
+          bookingId: booking?.bookingId,
           amount,
         }
       );

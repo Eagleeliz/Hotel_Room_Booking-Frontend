@@ -116,7 +116,6 @@ const RoomsPage: React.FC = () => {
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 const userId = user?.userId;
-console.log(user)
 
 
   return (

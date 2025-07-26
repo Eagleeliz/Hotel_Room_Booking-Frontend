@@ -20,7 +20,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 // User dashboard pages
 import UserDashboard from "./dashboard/MyDashboard";
 import MyBooking from "./dashboard/MyBooking";
-import { MyPayments } from "./dashboard/MyPayments";
+import  MyPayments  from "./dashboard/MyPayments";
 import SupportTicket from "./dashboard/SupportTicket";
 import MyProfile from "./dashboard/MyProfile";
 import LogOut from "./dashboard/LogOut";
@@ -33,7 +33,6 @@ import AdminAnalytics from "./components/AdminDashboard/Analytics";
 import AdminProfile from "./components/AdminDashboard/MyProfile";
 import AllPayments from "./components/AdminDashboard/AllPayments";
 import RoomsPage from "./pages/RoomsPage";
-import SupportTicktes from "./components/AdminDashboard/SupportTickets";
 import RoomsManagerPage from "./pages/RoomsManagerPage";
 import SupportTickets from "./components/AdminDashboard/SupportTickets";
 

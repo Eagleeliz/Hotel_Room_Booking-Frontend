@@ -22,8 +22,12 @@ const MyBooking: React.FC = () => {
   } = useGetBookingsByUserIdQuery(userId!, {
     skip: !userId,
   });
+  console.log("userbookings",userData)
 
-  const bookings: Booking[] = userData?.bookings ?? [];
+    const bookings: Booking[] = Array.isArray(userData)
+    ? userData // fallback
+    : (userData as any)?.bookings ?? [];
+
 
   if (!userId) {
     return <p className="p-4 text-red-500">Please log in to view your bookings.</p>;
@@ -72,7 +76,7 @@ const MyBooking: React.FC = () => {
         </div>
       </div>
 
-      {/* Show message if filtered bookings is empty AND user selected a filter */}
+      {/* No bookings message */}
       {filter !== "all" && filteredBookings.length === 0 ? (
         <div className="text-center text-gray-500 font-medium text-lg mt-10">
           {filter === "upcoming"
@@ -104,15 +108,15 @@ const MyBooking: React.FC = () => {
                     {booking.room?.roomType ?? "Room Type"}
                   </h3>
                   <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                      booking.status === "Confirmed"
-                        ? "bg-green-100 text-green-800"
-                        : booking.status === "Cancelled"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-yellow-100 text-yellow-800"
+                    className={`px-3 py-3 rounded-full text-sm font-semibold ${
+                      booking.bookingStatus === "Confirmed"
+                        ? "bg-gray-400 text-white"
+                        : booking.bookingStatus === "Pending"
+                        ? "bg-gray-400 text-white"
+                        : "bg-gray-200 text-white"
                     }`}
                   >
-                    {booking.status}
+                    {booking.bookingStatus}
                   </span>
                 </div>
 
@@ -141,7 +145,7 @@ const MyBooking: React.FC = () => {
                     Rebook
                   </Link>
 
-                  {booking.status === "Pending" && (
+                  {booking.bookingStatus === "Pending" && (
                     <button
                       onClick={() => console.log("Cancel booking:", booking.bookingId)}
                       className="flex-1 text-center px-4 py-2 rounded-md bg-gradient-to-r from-rose-400 via-pink-500 to-red-500 text-white hover:from-red-600 hover:to-rose-600 text-sm font-medium shadow-md transition"

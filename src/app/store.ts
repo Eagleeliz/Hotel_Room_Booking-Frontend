@@ -6,6 +6,8 @@ import { userApi } from '../features/api/userApi';
 import { HotelApi } from '../features/api/HotelApi'; 
 import { RoomApi } from '../features/api/RoomApi';
 import { bookingApi } from '../features/api/BookingApi'; 
+import { paymentApi } from '../features/api/PaymentApi'; // ✅ import paymentApi
+
 // Persist config
 const authPersistConfig = {
   key: 'auth',
@@ -20,7 +22,8 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [HotelApi.reducerPath]: HotelApi.reducer, 
     [RoomApi.reducerPath]: RoomApi.reducer,
-    [bookingApi.reducerPath]: bookingApi.reducer, 
+    [bookingApi.reducerPath]: bookingApi.reducer,
+    [paymentApi.reducerPath]: paymentApi.reducer, // ✅ add paymentApi reducer
     auth: persistedAuthReducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -30,7 +33,8 @@ export const store = configureStore({
       userApi.middleware,
       HotelApi.middleware,
       RoomApi.middleware,
-      bookingApi.middleware // ✅ Add middleware
+      bookingApi.middleware,
+      paymentApi.middleware // ✅ add paymentApi middleware
     ),
 });
 

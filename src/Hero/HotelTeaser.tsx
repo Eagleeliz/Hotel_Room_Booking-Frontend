@@ -13,7 +13,9 @@ const HotelTeaser: React.FC = () => {
   const topThreeHotels = data?.hotels?.slice(0, 3) || [];
 
   return (
-    <section className="bg-rose-50 py-16 px-6 text-center text-gray-800">
+   <section className="bg-rose-50 py-4 md:py-6 lg:py-8 px-6 text-center text-gray-800">
+
+
       <h2 className="text-3xl md:text-4xl font-bold text-pink-500 mb-6">
         Discover Our Hotels
       </h2>
@@ -21,7 +23,8 @@ const HotelTeaser: React.FC = () => {
         Explore the World With Golden Home Hotels.Where will you go?
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-30 max-w-7xl mx-auto">
+
         {topThreeHotels.map((hotel) => (
           <HotelCard
             key={hotel.hotelId}
@@ -39,7 +42,7 @@ const HotelTeaser: React.FC = () => {
       <div className="mt-10">
         <Link
           to="/hotels"
-          className="inline-block bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 text-white font-semibold px-6 py-3 rounded-full hover:from-pink-400 hover:to-red-400 transition-all shadow-md"
+          className="inline-block bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 !text-white font-semibold px-6 py-3 rounded-full hover:from-pink-400 hover:to-red-400 transition-all shadow-md"
         >
           Discover More
         </Link>
