@@ -2,7 +2,7 @@
 
 import { apiDomain } from "../../BackendUrl";
 
-const API_BASE = apiDomain;
+const API_BASE = `${apiDomain}/tickets`;
 
 export const getAllTickets = async (token: string) => {
   const res = await fetch(`${API_BASE}`, {
