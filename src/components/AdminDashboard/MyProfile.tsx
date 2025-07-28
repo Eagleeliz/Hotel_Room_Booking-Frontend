@@ -264,17 +264,17 @@ const MyProfile: React.FC = () => {
                   />
                 </div>
 
-                <div className="space-y-3 md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">New Password (optional)</label>
-                  <input
-                    type="password"
-                    name="password"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-rose-500 focus:border-rose-500"
-                    value={formData.password || ''}
-                    onChange={handleChange}
-                    placeholder="Leave blank to keep current password"
-                  />
-                </div>
+                 <div className="space-y-3 md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">New Password (optional)</label>
+              <input
+                type="password"
+                name="password"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+                value="********"
+                disabled
+              />
+            </div>
+
 
                 <div className="space-y-3 md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700">Address</label>
