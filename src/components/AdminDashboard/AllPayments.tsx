@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import  { useState, useMemo } from 'react';
 import { useGetAllPaymentsQuery } from '../../features/api/PaymentApi';
 import { FaSearch, FaFilter } from 'react-icons/fa';
 

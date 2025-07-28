@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useGetMyProfileQuery } from "../features/api/userApi";
 import { useGetBookingsByUserIdQuery } from "../features/api/BookingApi";
 import { FiCalendar, FiDollarSign, FiHelpCircle } from "react-icons/fi";

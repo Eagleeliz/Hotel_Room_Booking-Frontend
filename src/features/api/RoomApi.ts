@@ -1,5 +1,6 @@
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { apiDomain } from '../../BackendUrl';
 
 export interface Room {
   roomId: number;
@@ -19,7 +20,7 @@ export interface RoomResponse {
 
 export const RoomApi = createApi({
   reducerPath: 'roomApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: apiDomain }),
   tagTypes: ['rooms', 'room'],
   endpoints: (builder) => ({
     // ✅ Get all rooms

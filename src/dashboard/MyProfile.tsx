@@ -3,8 +3,6 @@ import {
   useGetMyProfileQuery,
   useUpdateMyProfileMutation,
 } from '../features/api/userApi';
-import { useSelector } from 'react-redux';
-import type { RootState } from '../app/store';
 
 type ProfileFormData = {
   firstName: string;

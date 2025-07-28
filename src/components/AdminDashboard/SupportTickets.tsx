@@ -3,7 +3,6 @@ import { useEffect, useState, useMemo } from 'react';
 import {
   Loader2,
   AlertCircle,
-  Edit,
   Trash2,
   CheckCircle
 } from 'lucide-react';

@@ -1,6 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import  { useState, useMemo } from 'react';
 import { useGetAllBookingsQuery } from '../../features/api/BookingApi';
-import type { Booking } from '../../types/Types';
 import { FaCalendarAlt, FaSearch, FaFilter } from 'react-icons/fa';
 
 const AllBookings = () => {

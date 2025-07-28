@@ -1,5 +1,6 @@
 // features/api/hotelApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { apiDomain } from '../../BackendUrl';
 
 export interface Hotel {
   hotelId: number; // 🛠️ Renamed from 'id'
@@ -20,7 +21,7 @@ export interface HotelResponse {
 
 export const HotelApi = createApi({
   reducerPath: 'hotelApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: apiDomain }),
   tagTypes: ['hotels', 'hotel'],
   endpoints: (builder) => ({
     // ✅ GET all hotels

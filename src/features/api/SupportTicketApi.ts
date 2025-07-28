@@ -1,6 +1,8 @@
 // src/api/SupportTicketApi.ts
 
-const API_BASE = "http://localhost:5000/api/tickets";
+import { apiDomain } from "../../BackendUrl";
+
+const API_BASE = apiDomain;
 
 export const getAllTickets = async (token: string) => {
   const res = await fetch(`${API_BASE}`, {

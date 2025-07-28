@@ -1,25 +1,26 @@
 // src/features/api/bookingApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { Booking } from '../../types/Types';
+import { apiDomain } from '../../BackendUrl';
 
 // Define UserWithBookings interface to match your API response shape
-interface UserWithBookings {
-  userId: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  contactPhone?: string | null;
-  address?: string | null;
-  role?: 'user' | 'admin';
-  createdAt: string;
-  updatedAt: string;
-  bookings: Booking[];
-}
+// interface UserWithBookings {
+//   userId: number;
+//   firstName: string;
+//   lastName: string;
+//   email: string;
+//   contactPhone?: string | null;
+//   address?: string | null;
+//   role?: 'user' | 'admin';
+//   createdAt: string;
+//   updatedAt: string;
+//   bookings: Booking[];
+// }
 
 export const bookingApi = createApi({
   reducerPath: 'bookingApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/',
+    baseUrl: apiDomain,
     // credentials: 'include', // uncomment if using cookies/sessions
   }),
   tagTypes: ['Booking', 'Bookings'],

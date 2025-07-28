@@ -1,11 +1,12 @@
 // src/features/api/userApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { User } from '../../types/Types';
+import { apiDomain } from '../../BackendUrl';
 
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/',
+    baseUrl: apiDomain,
     prepareHeaders: (headers) => {
       const token = localStorage.getItem('token');
       if (token) {
