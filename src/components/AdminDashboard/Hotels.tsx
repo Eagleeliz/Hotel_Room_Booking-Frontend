@@ -121,7 +121,7 @@ const Hotels = () => {
   if (isError) return <div>Error loading hotels</div>;
 
   return (
-    <div className="p-4 pt-20">
+    <div className="p-4 pt-10">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Hotels ({hotels?.hotels?.length ?? 0})</h2>
         <button
@@ -164,9 +164,9 @@ const Hotels = () => {
               <p><span className="font-semibold">Rating:</span> {hotel.rating ?? "N/A"}</p>
             </div>
             <div className="flex justify-between mt-4 gap-2">
-              <button onClick={() => handleEdit(hotel)} className="bg-red-500 text-white px-3 py-1 rounded text-sm">Edit</button>
-              <button onClick={() => hotel.hotelId && handleDelete(hotel.hotelId)} className="bg-pink-500 text-white px-3 py-1 rounded text-sm">Delete</button>
-              <button onClick={() => navigate(`/admindashboard/hotels/${hotel.hotelId}/rooms`)} className="bg-pink-600 text-white px-3 py-1 rounded text-sm">Rooms</button>
+              <button onClick={() => handleEdit(hotel)} className="!bg-red-500 text-white px-3 py-1 rounded text-sm">Edit</button>
+              <button onClick={() => hotel.hotelId && handleDelete(hotel.hotelId)} className="!bg-pink-500 text-white px-3 py-1 rounded text-sm">Delete</button>
+              <button onClick={() => navigate(`/admindashboard/hotels/${hotel.hotelId}/rooms`)} className="!bg-pink-600 text-white px-3 py-1 rounded text-sm">Rooms</button>
             </div>
           </div>
         ))}

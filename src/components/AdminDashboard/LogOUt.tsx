@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearCredentials } from "../../features/auth/authSlice";
+import { clearCredentials } from "../../features/auth/authSlice"; // ✅ Correct path from /dashboard
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -23,7 +23,13 @@ const LogOut: React.FC = () => {
       cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
+        // ✅ Clear credentials from redux
         dispatch(clearCredentials());
+
+        // ✅ Optional: clear localStorage if needed
+        localStorage.clear();
+
+        // ✅ Show success then navigate home
         MySwal.fire({
           icon: "success",
           title: "Logged out",
@@ -31,10 +37,10 @@ const LogOut: React.FC = () => {
           timer: 1500,
           showConfirmButton: false,
         }).then(() => {
-          navigate("/"); // ✅ Redirect to home page
+          navigate("/"); // Go to home
         });
       } else {
-        navigate(-1); // 👈 Go back to previous page (e.g. dashboard)
+        navigate(-1); // Go back
       }
     });
   }, [dispatch, navigate]);

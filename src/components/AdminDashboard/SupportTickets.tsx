@@ -84,7 +84,7 @@ const SupportTicket = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 pt-24">
+    <div className="max-w-7xl mx-auto px-4 py-8 pt-10">
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-blue-900">Admin Ticket Dashboard</h1>
         <p className="text-gray-600">Manage all submitted support tickets</p>

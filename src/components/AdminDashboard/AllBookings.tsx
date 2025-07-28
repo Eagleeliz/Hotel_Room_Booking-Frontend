@@ -25,7 +25,7 @@ const AllBookings = () => {
   if (isError) return <div className="p-6 pt-20 text-red-600">Failed to load bookings.</div>;
 
   return (
-    <div className="p-6 pt-20">
+    <div className="p-6 pt-10">
       <h2 className="text-2xl font-bold mb-6">All Bookings ({filteredBookings.length})</h2>
 
       {/* Search and Filter */}
