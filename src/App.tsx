@@ -35,6 +35,7 @@ import AllPayments from "./components/AdminDashboard/AllPayments";
 import RoomsPage from "./pages/RoomsPage";
 import RoomsManagerPage from "./pages/RoomsManagerPage";
 import SupportTickets from "./components/AdminDashboard/SupportTickets";
+import LogOUt from "./components/AdminDashboard/LogOUt";
 
 const router = createBrowserRouter([
   {
@@ -101,6 +102,8 @@ const router = createBrowserRouter([
       { path: "all-payments", element: <AllPayments /> },
       { path: "profile", element: <AdminProfile /> },
          { path: "support-tickets", element: <SupportTickets /> },
+            { path: "logout", element: <LogOUt /> },
+
 
     ],
   },

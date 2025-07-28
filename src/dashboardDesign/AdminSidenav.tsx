@@ -106,7 +106,7 @@ export const AdminSideNav = ({ onClose }: AdminSideNavProps) => {
       </li>
 
       <li>
-        <NavLink to="/logout" className={navItemClass} onClick={handleClick}>
+        <NavLink to="/admindashboard/logout" className={navItemClass} onClick={handleClick}>
           <LogOut className="w-6 h-6 text-red-600" />
           <span className="text-red-600">Logout</span>
         </NavLink>

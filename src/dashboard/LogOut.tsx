@@ -34,7 +34,7 @@ const LogOut: React.FC = () => {
           navigate("/"); // ✅ Redirect to home page
         });
       } else {
-        navigate(-1); // 👈 Go back to previous page (e.g. dashboard)
+        navigate("/dashboard"); // 👈 Go back to previous page (e.g. dashboard)
       }
     });
   }, [dispatch, navigate]);

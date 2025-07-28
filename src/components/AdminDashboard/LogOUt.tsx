@@ -1,14 +1,13 @@
-// src/dashboard/LogOut.tsx
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearCredentials } from "../../features/auth/authSlice"; // ✅ Correct path from /dashboard
+import { clearCredentials } from "../../features/auth/authSlice";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 const MySwal = withReactContent(Swal);
 
-const LogOut: React.FC = () => {
+const LogOUt: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -21,31 +20,42 @@ const LogOut: React.FC = () => {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, Log out",
       cancelButtonText: "Cancel",
+      background: '#f8fafc',
     }).then((result) => {
       if (result.isConfirmed) {
-        // ✅ Clear credentials from redux
+        // Clear all authentication state
         dispatch(clearCredentials());
-
-        // ✅ Optional: clear localStorage if needed
-        localStorage.clear();
-
-        // ✅ Show success then navigate home
+        
+        // Clear all stored tokens and data
+        localStorage.removeItem('authToken');
+        sessionStorage.removeItem('authToken');
+        localStorage.removeItem('persist:root'); // If using redux-persist
+        
+        // Show success message
         MySwal.fire({
           icon: "success",
-          title: "Logged out",
+          title: "Logged Out",
           text: "You have been successfully logged out.",
           timer: 1500,
           showConfirmButton: false,
+          background: '#f8fafc',
         }).then(() => {
-          navigate("/"); // Go to home
+          navigate("/"); // Redirect to login page
         });
       } else {
-        navigate(-1); // Go back
+        // If cancelled, go back to admin dashboard
+        navigate("/admindashboard");
       }
     });
   }, [dispatch, navigate]);
 
-  return <div className="text-center mt-10 text-gray-600">Preparing logout...</div>;
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="text-gray-600 animate-pulse">
+        Processing logout request...
+      </div>
+    </div>
+  );
 };
 
-export default LogOut;
+export default LogOUt;
