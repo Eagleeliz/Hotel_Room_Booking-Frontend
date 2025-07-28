@@ -8,8 +8,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import axios from "axios";
 
 const MySwal = withReactContent(Swal);
+
+const preset_key = "hotelsroomsystem";
+const cloud_name = "do1chmnps";
 
 interface RoomsManagerProps {
   hotelId: number;
@@ -29,10 +33,14 @@ const RoomsManager: React.FC<RoomsManagerProps> = ({ hotelId }) => {
     amenities: "",
     isAvailable: true,
     roomImg: "",
+    public_id: "",
+    asset_id: "",
   });
 
   const [editingRoomId, setEditingRoomId] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -44,11 +52,56 @@ const RoomsManager: React.FC<RoomsManagerProps> = ({ hotelId }) => {
     }));
   };
 
+  const handleImageUpload = async (file: File) => {
+    const cloudFormData = new FormData();
+    cloudFormData.append("file", file);
+    cloudFormData.append("upload_preset", preset_key);
+
+    try {
+      setUploading(true);
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
+        cloudFormData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const percent = Math.round(
+              (progressEvent.loaded * 100) / (progressEvent.total || 1)
+            );
+            setUploadProgress(percent);
+          },
+        }
+      );
+
+      const { secure_url, public_id, asset_id } = response.data;
+
+      // Update formData with uploaded image info
+      setFormData((prev) => ({
+        ...prev,
+        roomImg: secure_url,
+        public_id,
+        asset_id,
+      }));
+
+      MySwal.fire("Uploaded!", "Image uploaded successfully", "success");
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      MySwal.fire("Error", "Failed to upload image", "error");
+    } finally {
+      setUploading(false);
+      setUploadProgress(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.roomType || !formData.pricePerNight || !formData.capacity || !formData.amenities) {
       MySwal.fire("Validation Error", "Please fill in all required fields", "warning");
+      return;
+    }
+
+    if (!formData.roomImg) {
+      MySwal.fire("Upload Required", "Please upload an image first", "warning");
       return;
     }
 
@@ -75,6 +128,8 @@ const RoomsManager: React.FC<RoomsManagerProps> = ({ hotelId }) => {
         amenities: "",
         isAvailable: true,
         roomImg: "",
+        public_id: "",
+        asset_id: "",
       });
       setEditingRoomId(null);
       setShowModal(false);
@@ -92,6 +147,8 @@ const RoomsManager: React.FC<RoomsManagerProps> = ({ hotelId }) => {
       amenities: room.amenities,
       isAvailable: room.isAvailable,
       roomImg: room.roomImg || "",
+      public_id: room.public_id || "",
+      asset_id: room.asset_id || "",
     });
     setEditingRoomId(room.roomId);
     setShowModal(true);
@@ -120,7 +177,6 @@ const RoomsManager: React.FC<RoomsManagerProps> = ({ hotelId }) => {
 
   return (
     <div className="p-4 pt-4">
-      {/* ✅ Both buttons in one row */}
       <div className="flex justify-between items-center mb-6">
         <button
           onClick={() => navigate("/admindashboard/hotels")}
@@ -138,6 +194,8 @@ const RoomsManager: React.FC<RoomsManagerProps> = ({ hotelId }) => {
               amenities: "",
               isAvailable: true,
               roomImg: "",
+              public_id: "",
+              asset_id: "",
             });
             setShowModal(true);
           }}
@@ -229,14 +287,38 @@ const RoomsManager: React.FC<RoomsManagerProps> = ({ hotelId }) => {
                 className="border p-2 rounded"
                 required
               />
+
               <input
-                type="text"
-                name="roomImg"
-                placeholder="Image URL"
-                value={formData.roomImg}
-                onChange={handleChange}
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    handleImageUpload(e.target.files[0]);
+                  }
+                }}
                 className="border p-2 rounded col-span-2"
               />
+
+              {formData.roomImg && (
+                <img
+                  src={formData.roomImg}
+                  alt="Preview"
+                  className="w-32 h-20 object-cover rounded mt-2 col-span-2"
+                />
+              )}
+
+              {uploading && uploadProgress !== null && (
+                <div className="col-span-2">
+                  <p className="text-sm text-gray-600">Uploading: {uploadProgress}%</p>
+                  <div className="w-full h-2 bg-gray-200 rounded">
+                    <div
+                      className="h-2 bg-pink-500 rounded"
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+
               <label className="col-span-2 flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -246,19 +328,21 @@ const RoomsManager: React.FC<RoomsManagerProps> = ({ hotelId }) => {
                 />
                 <span>Available</span>
               </label>
+
               <div className="col-span-2 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="bg-gradient-to-r from-pink-500 to-red-500 text-white text-white px-4 py-2 rounded"
+                  className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-4 py-2 rounded"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-red-500 to-red-500 text-white text-white px-4 py-2 rounded"
+                  disabled={uploading}
+                  className="bg-gradient-to-r from-red-500 to-red-500 text-white px-4 py-2 rounded"
                 >
-                  {editingRoomId ? "Update Room" : "Create Room"}
+                  {editingRoomId ? "Update Room" : uploading ? "Uploading..." : "Create Room"}
                 </button>
               </div>
             </form>

@@ -39,12 +39,25 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
         </div>
 
         {/* Hamburger Menu Icon */}
-        <div className="md:hidden">
+   <div className="md:hidden">
   <button
     onClick={onMenuClick ?? (() => setMenuOpen(!menuOpen))}
-    className="!p-3 !rounded-md border !border-rose-300 !text-rose-600 !hover:bg-rose-100 !transition-all"
+    className="p-2 rounded-full border-2 border-rose-200 bg-white text-rose-600 
+              hover:bg-rose-50 transition-all duration-200 
+              focus:outline-none focus:ring-2 focus:ring-rose-300 focus:ring-offset-2"
+    aria-label={menuOpen ? "Close menu" : "Open menu"}
   >
-    {menuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+    {menuOpen ? (
+      <FaTimes 
+        size={20} 
+        className="text-rose-600 transition-transform duration-200" 
+      />
+    ) : (
+      <FaBars 
+        size={20} 
+        className="text-rose-600 transition-transform duration-200" 
+      />
+    )}
   </button>
 </div>
 
@@ -138,56 +151,97 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
 
       {/* Mobile Navigation */}
       {menuOpen && (
-        <div className="md:hidden mt-3 space-y-3">
-          <ul className="flex flex-col space-y-2 text-sm text-gray-700">
-            <li><Link to="/" onClick={() => setMenuOpen(false)}>Home</Link></li>
-            <li><Link to="/about" onClick={() => setMenuOpen(false)}>About</Link></li>
-            <li><Link to="/hotels" onClick={() => setMenuOpen(false)}>Hotels</Link></li>
-            <li><Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link></li>
-          </ul>
+  <div className="md:hidden bg-white shadow-lg rounded-lg mx-4 mt-2 p-4 animate-fade-in text-center">
+    {/* Navigation Links */}
+    <ul className="flex flex-col space-y-2 items-center">
+      <li className="w-full">
+        <Link 
+          to="/" 
+          onClick={() => setMenuOpen(false)}
+          className="flex items-center justify-center px-4 py-3 rounded-lg text-gray-800 hover:bg-rose-50 transition-colors w-full"
+        >
+          <BiHome className="text-xl text-rose-600 mr-3" />
+          Home
+        </Link>
+      </li>
+      <li className="w-full">
+        <Link 
+          to="/about" 
+          onClick={() => setMenuOpen(false)}
+          className="flex items-center justify-center px-4 py-3 rounded-lg text-gray-800 hover:bg-rose-50 transition-colors w-full"
+        >
+          <BiInfoCircle className="text-xl text-rose-600 mr-3" />
+          About
+        </Link>
+      </li>
+      <li className="w-full">
+        <Link 
+          to="/hotels" 
+          onClick={() => setMenuOpen(false)}
+          className="flex items-center justify-center px-4 py-3 rounded-lg text-gray-800 hover:bg-rose-50 transition-colors w-full"
+        >
+          <BiHotel className="text-xl text-rose-600 mr-3" />
+          Hotels
+        </Link>
+      </li>
+      <li className="w-full">
+        <Link 
+          to="/contact" 
+          onClick={() => setMenuOpen(false)}
+          className="flex items-center justify-center px-4 py-3 rounded-lg text-gray-800 hover:bg-rose-50 transition-colors w-full"
+        >
+          <BiPhone className="text-xl text-rose-600 mr-3" />
+          Contact
+        </Link>
+      </li>
+    </ul>
 
-          <div className="flex flex-col space-y-3 mt-4">
-            {!isAuthenticated ? (
-              <>
-                <Link
-                  to="/register"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg text-lg font-semibold border border-white bg-pink-100 text-rose-600 hover:bg-pink-200 transition-all duration-300"
-                >
-                  <FaUserPlus className="text-lg" /> Register
-                </Link>
-                <Link
-                  to="/login"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg text-lg font-semibold border border-white bg-pink-100 text-rose-600 hover:bg-pink-200 transition-all duration-300"
-                >
-                  <FaSignInAlt className="text-lg" /> Login
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  to={user?.role === "admin" ? "/admindashboard/analytics" : "/dashboard"}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg text-lg font-semibold border border-white bg-pink-100 text-rose-600 hover:bg-pink-200 transition-all duration-300"
-                >
-                  <GrDashboard className="text-lg" />
-                  {user?.role === "admin" ? "Admin Dashboard" : "User Dashboard"}
-                </Link>
-                <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    handleLogout();
-                  }}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg text-lg font-semibold border border-white bg-pink-100 text-rose-600 hover:bg-pink-200 transition-all duration-300"
-                >
-                  <FaSignOutAlt className="text-lg" /> Logout
-                </button>
-              </>
-            )}
-          </div>
+    {/* Auth Buttons */}
+    <div className="mt-4 pt-4 border-t border-rose-100">
+      {!isAuthenticated ? (
+        <div className="flex flex-col items-center space-y-3">
+          <Link
+            to="/register"
+            onClick={() => setMenuOpen(false)}
+            className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-rose-600 !text-white hover:bg-rose-700 transition-colors w-full"
+          >
+            <FaUserPlus className="text-lg" />
+            Register
+          </Link>
+          <Link
+            to="/login"
+            onClick={() => setMenuOpen(false)}
+            className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-rose-600 text-rose-600 hover:bg-rose-50 transition-colors w-full"
+          >
+            <FaSignInAlt className="text-lg" />
+            Login
+          </Link>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center space-y-3">
+          <Link
+            to={user?.role === "admin" ? "/admindashboard/analytics" : "/dashboard"}
+            onClick={() => setMenuOpen(false)}
+            className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-rose-600 text-white hover:bg-rose-700 transition-colors w-full"
+          >
+            <GrDashboard className="text-lg" />
+            {user?.role === "admin" ? "Admin Dashboard" : "User Dashboard"}
+          </Link>
+          <button
+            onClick={() => {
+              setMenuOpen(false);
+              handleLogout();
+            }}
+            className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-rose-600 text-rose-600 hover:bg-rose-50 transition-colors w-full"
+          >
+            <FaSignOutAlt className="text-lg" />
+            Logout
+          </button>
         </div>
       )}
+    </div>
+  </div>
+)}
     </nav>
   );
 };
