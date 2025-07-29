@@ -1,9 +1,11 @@
+import React, { useState } from "react";
 import registerImage from "../assets/register.svg";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { userApi } from "../features/api/userApi";
 import { toast, Toaster } from "sonner";
 import Navbar from "../components/Navbar";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // <-- added
 
 type userRegisterForm = {
   firstName: string;
@@ -17,6 +19,8 @@ type userRegisterForm = {
 
 const Register = () => {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false); // for password
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // for confirm
 
   const {
     register,
@@ -95,9 +99,7 @@ const Register = () => {
                   })}
                 />
                 {errors.firstName && (
-                  <span className="text-red-500">
-                    {errors.firstName.message}
-                  </span>
+                  <span className="text-red-500">{errors.firstName.message}</span>
                 )}
               </div>
 
@@ -145,9 +147,7 @@ const Register = () => {
                   {...register("contactPhone", { required: true })}
                 />
                 {errors.contactPhone && (
-                  <span className="text-red-500">
-                    Contact Phone is required
-                  </span>
+                  <span className="text-red-500">Contact Phone is required</span>
                 )}
               </div>
 
@@ -167,17 +167,13 @@ const Register = () => {
                       message: "Address must be at least 5 characters",
                     },
                     pattern: {
-                      value:
-                        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\s,.'-]{5,}$/,
-                      message:
-                        "Address must include both letters and numbers",
+                      value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\s,.'-]{5,}$/,
+                      message: "Address must include both letters and numbers",
                     },
                   })}
                 />
                 {errors.address && (
-                  <span className="text-red-500">
-                    {errors.address.message}
-                  </span>
+                  <span className="text-red-500">{errors.address.message}</span>
                 )}
               </div>
 
@@ -186,12 +182,21 @@ const Register = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Password
                 </label>
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-rose-500 text-gray-800 placeholder:text-gray-400"
-                  {...register("password", { required: true })}
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    className="flex-1 border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-rose-500 text-gray-800 placeholder:text-gray-400"
+                    {...register("password", { required: true })}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="!text-gray-700 hover:text-rose-300  !bg-rose-300"
+                  >
+                    {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                  </button>
+                </div>
                 {errors.password && (
                   <span className="text-red-500">Password is required</span>
                 )}
@@ -202,16 +207,29 @@ const Register = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Confirm Password
                 </label>
-                <input
-                  type="password"
-                  placeholder="Confirm your password"
-                  className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-rose-500 text-gray-800 placeholder:text-gray-400"
-                  {...register("confirmPassword", {
-                    required: "Confirm Password is required",
-                    validate: (value) =>
-                      value === passwordValue || "Passwords do not match",
-                  })}
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    className="flex-1 border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-rose-500 text-gray-800 placeholder:text-gray-400"
+                    {...register("confirmPassword", {
+                      required: "Confirm Password is required",
+                      validate: (value) =>
+                        value === passwordValue || "Passwords do not match",
+                    })}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className= "!text-gray-700 hover:text-rose-300  !bg-rose-300"
+                  >
+                    {showConfirmPassword ? (
+                      <FaEyeSlash size={20} />
+                    ) : (
+                      <FaEye size={20} />
+                    )}
+                  </button>
+                </div>
                 {errors.confirmPassword && (
                   <span className="text-red-500">
                     {errors.confirmPassword.message}
@@ -219,6 +237,7 @@ const Register = () => {
                 )}
               </div>
 
+              {/* Submit */}
               <button
                 type="submit"
                 className="w-full bg-rose-600 text-white py-3 rounded-lg font-semibold hover:bg-rose-700 transition duration-300"

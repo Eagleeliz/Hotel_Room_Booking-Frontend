@@ -173,7 +173,7 @@ const MyDashboard = () => {
 
           <Link
             to="/dashboard/orders?filter=upcoming"
-            className="mt-6 inline-block text-center bg-rose-500 hover:bg-rose-600 text-white py-2 px-4 rounded-md text-sm font-medium transition"
+            className="mt-6 inline-block text-center bg-rose-500 hover:bg-rose-600 !text-white py-2 px-4 rounded-md text-sm font-medium transition"
           >
             View All Bookings
           </Link>

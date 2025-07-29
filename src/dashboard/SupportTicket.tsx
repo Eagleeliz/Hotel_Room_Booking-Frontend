@@ -78,7 +78,11 @@ const SupportTicket: React.FC = () => {
       if (!token) throw new Error("Missing authentication token");
 
       const user = JSON.parse(localStorage.getItem("user") || "{}");
-      const userId = user.id;
+      const userId = user.userId;
+
+      if (typeof userId !== "number") {
+        throw new Error("Invalid user data: userId is missing or malformed");
+      }
 
       if (editingTicket) {
         await updateTicket(
@@ -235,7 +239,7 @@ const SupportTicket: React.FC = () => {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="bg-rose-300 text-white px-6 py-2 rounded-md shadow-md hover:bg-rose-400 transition"
+                className="!bg-rose-300 text-white px-6 py-2 rounded-md shadow-md hover:bg-rose-400 transition"
               >
                 Cancel
               </button>
@@ -271,7 +275,7 @@ const SupportTicket: React.FC = () => {
               {ticket.status === "Open" && (
                 <button
                   onClick={() => handleEditTicket(ticket)}
-                  className="bg-pink-500 text-white p-1 rounded-full shadow-md hover:bg-pink-600 transition"
+                  className="!bg-pink-400 text-white p-1 rounded-full shadow-md hover:bg-pink-600 transition"
                   title="Edit Ticket"
                 >
                   <FiEdit size={18} />
@@ -279,7 +283,7 @@ const SupportTicket: React.FC = () => {
               )}
               <button
                 onClick={() => handleDeleteTicket(ticket.ticketId)}
-                className="bg-rose-500 text-white p-1 rounded-full shadow-md hover:bg-rose-600 transition"
+                className="!bg-rose-400 text-white p-1 rounded-full shadow-md hover:bg-rose-600 transition"
                 title="Delete Ticket"
               >
                 <FiTrash2 size={18} />

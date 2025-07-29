@@ -5,7 +5,7 @@ import {
   useGetBookingsByUserIdQuery,
   useCancelBookingMutation,
 } from "../features/api/BookingApi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiFilter } from "react-icons/fi";
 import type { Booking } from "../types/Types";
 import Swal from "sweetalert2";
@@ -16,6 +16,7 @@ const MySwal = withReactContent(Swal);
 const MyBooking: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const userId = user?.userId;
+  const navigate = useNavigate();
 
   const [filter, setFilter] = useState<"all" | "upcoming" | "past">("all");
 
@@ -91,7 +92,18 @@ const MyBooking: React.FC = () => {
       icon: "info",
       confirmButtonColor: "#3b82f6",
     });
-    return <></>;
+    return (
+      <div className="p-10 text-center text-gray-600">
+        <p className="mb-4 text-lg">You have not made any bookings yet.</p>
+        <button
+          onClick={() => navigate("/hotels")}
+         className="px-6 py-2 bg-gradient-to-r from-rose-400 via-pink-500 to-red-500 text-white rounded-md shadow-md hover:from-rose-600 hover:to-red-500 transition font-medium"
+
+        >
+          Make Your First Booking
+        </button>
+      </div>
+    );
   }
 
   const now = new Date();
@@ -159,12 +171,12 @@ const MyBooking: React.FC = () => {
                   <span
                     className={`px-1.5 py-0.5 rounded-full text-xs font-semibold ${
                       booking.bookingStatus === "Confirmed"
-                        ? "bg-green-500 text-white"
+                        ? "bg-green-100 text-green-700"
                         : booking.bookingStatus === "Pending"
-                        ? "bg-yellow-500 text-black"
+                        ? "bg-yellow-100 text-yellow-700"
                         : booking.bookingStatus === "Cancelled"
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-300 text-black"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-gray-200 text-black"
                     }`}
                   >
                     {booking.bookingStatus}
