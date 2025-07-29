@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useGetRoomsByHotelIdQuery } from "../features/api/RoomApi";
 import { useGetHotelByIdQuery } from "../features/api/HotelApi";
@@ -29,7 +29,13 @@ const RoomsPage: React.FC = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
-  const { data: rooms } = useGetRoomsByHotelIdQuery(Number(hotelId));
+  const {
+    data: rooms,
+    isLoading: roomsLoading,
+    isError: roomsError,
+    error: roomsErrorData,
+  } = useGetRoomsByHotelIdQuery(Number(hotelId));
+
   const { data: hotelDetails } = useGetHotelByIdQuery(Number(hotelId));
   const hotelName = hotelDetails?.hotel?.name ?? "this hotel";
 
@@ -115,8 +121,19 @@ const RoomsPage: React.FC = () => {
   };
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-const userId = user?.userId;
+  const userId = user?.userId;
 
+  useEffect(() => {
+    const message = (roomsErrorData as any)?.data?.message;
+    if (!roomsLoading && message === "No rooms found for this hotel") {
+      Swal.fire({
+        icon: "info",
+        title: "No Rooms Found",
+        text: `This hotel has no rooms at the moment.`,
+        confirmButtonColor: "#6366f1",
+      });
+    }
+  }, [roomsLoading, roomsErrorData]);
 
   return (
     <section className="w-screen min-h-screen bg-pink-50 px-6 py-12 flex flex-col items-center">
@@ -124,7 +141,10 @@ const userId = user?.userId;
       <h1 className="text-xl font-bold text-pink-500 mb-4">
         Welcome to {hotelName}
       </h1>
-      <Link to="/hotels" className="mb-4 inline-block bg-pink-500 text-white font-semibold px-6 py-2 rounded-full">
+      <Link
+        to="/hotels"
+        className="mb-4 inline-block bg-pink-500 !text-white font-semibold px-6 py-2 rounded-full"
+      >
         ← Back to Hotels
       </Link>
 
@@ -132,21 +152,23 @@ const userId = user?.userId;
       <div className="flex gap-6 items-end flex-wrap justify-center bg-white p-6 rounded-xl shadow mb-10">
         <div className="flex flex-col relative">
           <label className="text-sm font-medium text-gray-700 mb-1">Check-in Date</label>
-                          <input
-                ref={checkInRef}
-                type="date"
-                value={checkInDate}
-                onChange={(e) => {
-                  setCheckInDate(e.target.value);
-                  if (checkOutDate && e.target.value >= checkOutDate) {
-                    setCheckOutDate("");
-                  }
-                }} // ✅ fixed: closed the onChange function properly
-                min={today}
-                className="border border-gray-300 px-4 py-2 rounded-md text-gray-800 pr-10"
-              />
-
-          <FaCalendarAlt className="absolute right-3 top-9 text-gray-500 cursor-pointer" onClick={() => checkInRef.current?.showPicker()} />
+          <input
+            ref={checkInRef}
+            type="date"
+            value={checkInDate}
+            onChange={(e) => {
+              setCheckInDate(e.target.value);
+              if (checkOutDate && e.target.value >= checkOutDate) {
+                setCheckOutDate("");
+              }
+            }}
+            min={today}
+            className="border border-gray-300 px-4 py-2 rounded-md text-gray-800 pr-10"
+          />
+          <FaCalendarAlt
+            className="absolute right-3 top-9 text-gray-500 cursor-pointer"
+            onClick={() => checkInRef.current?.showPicker()}
+          />
         </div>
 
         <div className="flex flex-col relative">
@@ -159,19 +181,30 @@ const userId = user?.userId;
             min={checkInDate || today}
             className="border border-gray-300 px-4 py-2 rounded-md text-gray-800 pr-10"
           />
-          <FaCalendarAlt className="absolute right-3 top-9 text-gray-500 cursor-pointer" onClick={() => checkOutRef.current?.showPicker()} />
+          <FaCalendarAlt
+            className="absolute right-3 top-9 text-gray-500 cursor-pointer"
+            onClick={() => checkOutRef.current?.showPicker()}
+          />
         </div>
 
-        <button onClick={handleCheckAvailability} className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-2 rounded-full hover:scale-105 transition">
+        <button
+          onClick={handleCheckAvailability}
+          className="bg-gradient-to-r from-pink-500 to-red-500 text-white px-6 py-2 rounded-full hover:scale-105 transition"
+        >
           {loading ? "Checking..." : "Check Availability"}
         </button>
       </div>
 
       {error && <p className="text-red-500">{error}</p>}
 
-      {/* Room Cards */}
+      {!roomsLoading && (roomsError || rooms?.length === 0) && (
+        <div className="text-center text-gray-500 text-lg font-medium mt-10">
+          No rooms are available for {hotelName} at the moment.
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-7xl">
-        {rooms?.map((room) => {
+        {!roomsError && rooms?.map((room) => {
           const available = isRoomAvailable(room.roomId);
           if (hasCheckedAvailability && !available) return null;
 
@@ -185,7 +218,6 @@ const userId = user?.userId;
         })}
       </div>
 
-      {/* Booking Modal */}
       {showModal && selectedRoom && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black bg-opacity-40">
           <div className="relative bg-white text-black p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">

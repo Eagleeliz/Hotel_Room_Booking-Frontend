@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Toaster, toast } from 'sonner';
+import Swal from 'sweetalert2';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -13,7 +13,7 @@ const Contact: React.FC = () => {
     setErrors({ ...errors, [name]: '' });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: typeof errors = {};
 
@@ -26,17 +26,45 @@ const Contact: React.FC = () => {
       return;
     }
 
-    toast.success('Message sent successfully!');
-    setFormData({ name: '', email: '', message: '' });
+    try {
+      const response = await fetch("https://formspree.io/f/xqalbyyv", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Thank you for contacting Golden Home Hotels',
+          text: 'Message sent successfully.',
+          confirmButtonColor: '#ef4444',
+        });
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: 'Failed to send message. Please try again later.',
+        });
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Unexpected Error',
+        text: 'Something went wrong. Please try again later.',
+      });
+    }
   };
 
   return (
     <>
       <Navbar />
-      <Toaster position="top-right" />
-
       <section className="w-screen min-h-screen bg-pink-50 text-gray-800 px-6 py-20 overflow-x-hidden">
-        {/* Heading */}
         <h1 className="text-4xl md:text-5xl font-bold text-center text-pink-500 mb-4">
           Get in Touch
         </h1>

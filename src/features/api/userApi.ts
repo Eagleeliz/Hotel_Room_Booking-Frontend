@@ -1,4 +1,3 @@
-// src/features/api/userApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { User } from '../../types/Types';
 import { apiDomain } from '../../BackendUrl';
@@ -18,16 +17,17 @@ export const userApi = createApi({
   tagTypes: ['users', 'user'],
   endpoints: (builder) => ({
 
-     loginUser: builder.mutation({
-  query: (userLoginCredentials) => ({
-    url: 'auth/login',
-    method: 'POST',
-    body: userLoginCredentials,
-  }),
-  invalidatesTags: ['user'],
-}),
+    // ✅ Login
+    loginUser: builder.mutation({
+      query: (userLoginCredentials) => ({
+        url: 'auth/login',
+        method: 'POST',
+        body: userLoginCredentials,
+      }),
+      invalidatesTags: ['user'],
+    }),
 
-
+    // ✅ Register
     registerUser: builder.mutation({
       query: (userRegisterPayload) => ({
         url: 'auth/register',
@@ -36,11 +36,13 @@ export const userApi = createApi({
       }),
     }),
 
-    getMyProfile: builder.query<any,void>({
-      query: () => `users/me`,
+    // ✅ Get logged-in user profile
+    getMyProfile: builder.query<any, void>({
+      query: () => 'users/me',
       providesTags: ['user'],
     }),
 
+    // ✅ Update logged-in user profile
     updateMyProfile: builder.mutation({
       query: (payload) => ({
         url: 'users/me',
@@ -50,27 +52,19 @@ export const userApi = createApi({
       invalidatesTags: ['user'],
     }),
 
-getAllUsersProfiles: builder.query<User[], void>({
-  query: () => 'users',
-  providesTags: ['users'],
-}),
+    // ✅ Get all user profiles (admin)
+    getAllUsersProfiles: builder.query<User[], void>({
+      query: () => 'users',
+      providesTags: ['users'],
+    }),
 
-
+    // ✅ Get user by ID (if needed)
     getUserById: builder.query({
       query: (user_id: number) => `users/${user_id}`,
       providesTags: ['user'],
     }),
 
-    getUserProfile: builder.query({
-      query: (userId: number) => `users/${userId}`,
-      providesTags: ['user'],
-    }),
-
-    getUserByID: builder.query({
-      query: (userId) => `users/${userId}`,
-      providesTags: ['users'],
-    }),
-
+    // ✅ Update any user's profile (admin)
     updateUserProfile: builder.mutation({
       query: ({ user_id, ...patch }) => ({
         url: `users/${user_id}`,
@@ -80,6 +74,7 @@ getAllUsersProfiles: builder.query<User[], void>({
       invalidatesTags: ['user', 'users'],
     }),
 
+    // ✅ Update profile image
     updateUserProfileImage: builder.mutation({
       query: ({ user_id, profile_picture }) => ({
         url: `users/${user_id}`,
@@ -89,6 +84,7 @@ getAllUsersProfiles: builder.query<User[], void>({
       invalidatesTags: ['user', 'users'],
     }),
 
+    // ✅ Delete user profile
     deleteUserProfile: builder.mutation({
       query: (user_id) => ({
         url: `users/${user_id}`,
@@ -96,6 +92,17 @@ getAllUsersProfiles: builder.query<User[], void>({
       }),
       invalidatesTags: ['user', 'users'],
     }),
+
+    // ✅ Corrected: Update user role via PATCH /users/role
+    updateUserRole: builder.mutation<void, { userId: number; role: 'admin' | 'user' }>({
+      query: ({ userId, role }) => ({
+        url: 'users/role',
+        method: 'PATCH',
+        body: { userId, role },
+      }),
+      invalidatesTags: ['user', 'users'],
+    }),
+
   }),
 });
 
@@ -106,9 +113,8 @@ export const {
   useUpdateMyProfileMutation,
   useGetAllUsersProfilesQuery,
   useGetUserByIdQuery,
-  useGetUserProfileQuery,
-  useGetUserByIDQuery,
   useUpdateUserProfileMutation,
   useUpdateUserProfileImageMutation,
   useDeleteUserProfileMutation,
+  useUpdateUserRoleMutation,
 } = userApi;

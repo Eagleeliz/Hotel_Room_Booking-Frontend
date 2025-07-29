@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../app/store";
-import { useGetBookingsByUserIdQuery } from "../features/api/BookingApi";
+import {
+  useGetBookingsByUserIdQuery,
+  useCancelBookingMutation,
+} from "../features/api/BookingApi";
 import { Link } from "react-router-dom";
 import { FiFilter } from "react-icons/fi";
 import type { Booking } from "../types/Types";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 const MyBooking: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log("Logged-in user:", user); // Debug: check user shape
-
   const userId = user?.userId;
 
   const [filter, setFilter] = useState<"all" | "upcoming" | "past">("all");
@@ -22,29 +27,73 @@ const MyBooking: React.FC = () => {
   } = useGetBookingsByUserIdQuery(userId!, {
     skip: !userId,
   });
-  console.log("userbookings",userData)
 
-    const bookings: Booking[] = Array.isArray(userData)
-    ? userData // fallback
+  const [cancelBooking] = useCancelBookingMutation();
+
+  const handleCancelBooking = async (bookingId: number) => {
+    const result = await MySwal.fire({
+      title: "Are you sure?",
+      text: "This booking will be cancelled and cannot be reversed.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e11d48", // rose-600
+      cancelButtonColor: "#6b7280", // gray-500
+      confirmButtonText: "Yes, cancel it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await cancelBooking(bookingId).unwrap();
+        await MySwal.fire({
+          title: "Cancelled!",
+          text: "Your booking has been cancelled.",
+          icon: "success",
+          confirmButtonColor: "#10b981", // green-500
+        });
+      } catch (err) {
+        console.error("Cancel booking error:", err);
+        await MySwal.fire({
+          title: "Error!",
+          text: "Something went wrong while cancelling your booking.",
+          icon: "error",
+          confirmButtonColor: "#ef4444", // red-500
+        });
+      }
+    }
+  };
+
+  const bookings: Booking[] = Array.isArray(userData)
+    ? userData
     : (userData as any)?.bookings ?? [];
-
 
   if (!userId) {
     return <p className="p-4 text-red-500">Please log in to view your bookings.</p>;
   }
 
-  if (isLoading) return <p className="p-4 text-gray-600">Loading your bookings...</p>;
+  if (isLoading)
+    return <p className="p-4 text-gray-600">Loading your bookings...</p>;
 
   if (isError) {
     console.error("Booking fetch error:", error);
-    return <p className="p-4 text-red-500">Failed to load bookings.</p>;
+    MySwal.fire({
+      title: "Error!",
+      text: "Failed to load bookings.",
+      icon: "error",
+      confirmButtonColor: "#ef4444",
+    });
+    return <></>;
   }
 
   if (!bookings || bookings.length === 0) {
-    return <p className="p-4 text-gray-500">You have no bookings yet.</p>;
+    MySwal.fire({
+      title: "No Bookings Yet",
+      text: "You have not made any bookings yet.",
+      icon: "info",
+      confirmButtonColor: "#3b82f6",
+    });
+    return <></>;
   }
 
-  // Filter logic
   const now = new Date();
   const filteredBookings = bookings.filter((booking) => {
     const checkIn = new Date(booking.checkInDate);
@@ -76,7 +125,7 @@ const MyBooking: React.FC = () => {
         </div>
       </div>
 
-      {/* No bookings message */}
+      {/* No bookings after filtering */}
       {filter !== "all" && filteredBookings.length === 0 ? (
         <div className="text-center text-gray-500 font-medium text-lg mt-10">
           {filter === "upcoming"
@@ -108,12 +157,14 @@ const MyBooking: React.FC = () => {
                     {booking.room?.roomType ?? "Room Type"}
                   </h3>
                   <span
-                    className={`px-3 py-3 rounded-full text-sm font-semibold ${
+                    className={`px-1.5 py-0.5 rounded-full text-xs font-semibold ${
                       booking.bookingStatus === "Confirmed"
-                        ? "bg-gray-400 text-white"
+                        ? "bg-green-500 text-white"
                         : booking.bookingStatus === "Pending"
-                        ? "bg-gray-400 text-white"
-                        : "bg-gray-200 text-white"
+                        ? "bg-yellow-500 text-black"
+                        : booking.bookingStatus === "Cancelled"
+                        ? "bg-red-500 text-white"
+                        : "bg-gray-300 text-black"
                     }`}
                   >
                     {booking.bookingStatus}
@@ -140,14 +191,14 @@ const MyBooking: React.FC = () => {
                 <div className="flex gap-4 pt-4">
                   <Link
                     to={`/hotels/${booking.room?.hotelId}/rooms`}
-                    className="flex-1 text-center px-4 py-2 rounded-md bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 text-white hover:from-rose-600 hover:to-pink-600 text-sm font-medium shadow-md transition"
+                    className="flex-1 text-center px-4 py-2 rounded-md bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 !text-white hover:from-rose-600 hover:to-pink-600 text-sm font-medium shadow-md transition"
                   >
                     Rebook
                   </Link>
 
                   {booking.bookingStatus === "Pending" && (
                     <button
-                      onClick={() => console.log("Cancel booking:", booking.bookingId)}
+                      onClick={() => handleCancelBooking(booking.bookingId)}
                       className="flex-1 text-center px-4 py-2 rounded-md bg-gradient-to-r from-rose-400 via-pink-500 to-red-500 text-white hover:from-red-600 hover:to-rose-600 text-sm font-medium shadow-md transition"
                     >
                       Cancel

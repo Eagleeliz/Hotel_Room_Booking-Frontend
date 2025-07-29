@@ -1,9 +1,17 @@
-import  { useState, useMemo } from 'react';
-import { useGetAllBookingsQuery } from '../../features/api/BookingApi';
-import { FaCalendarAlt, FaSearch, FaFilter } from 'react-icons/fa';
+import { useState, useMemo } from 'react';
+import {
+  useGetAllBookingsQuery,
+  useUpdateBookingStatusMutation,
+  useDeleteBookingMutation,
+} from '../../features/api/BookingApi';
+import { FaCalendarAlt, FaSearch, FaFilter, FaEdit, FaTrash } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 const AllBookings = () => {
-  const { data: bookings = [], isLoading, isError } = useGetAllBookingsQuery();
+  const { data: bookings = [], isLoading, isError, refetch } = useGetAllBookingsQuery();
+  const [updateBookingStatus] = useUpdateBookingStatusMutation();
+  const [deleteBooking] = useDeleteBookingMutation();
+
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
@@ -19,6 +27,52 @@ const AllBookings = () => {
       return matchesSearch && matchesStatus;
     });
   }, [bookings, search, statusFilter]);
+
+  const handleStatusChange = async (booking: any) => {
+    const { value: newStatus } = await Swal.fire({
+      title: 'Edit Booking Status',
+      input: 'select',
+      inputOptions: {
+        Confirmed: 'Confirmed',
+        Pending: 'Pending',
+        Cancelled: 'Cancelled',
+      },
+      inputValue: booking.bookingStatus,
+      showCancelButton: true,
+      confirmButtonColor: '#10B981',
+    });
+
+    if (newStatus && newStatus !== booking.bookingStatus) {
+      try {
+        await updateBookingStatus({ id: booking.bookingId, status: newStatus }).unwrap();
+        Swal.fire('Updated!', 'Status updated successfully.', 'success');
+        refetch(); // Refresh bookings
+      } catch (err) {
+        Swal.fire('Error', 'Failed to update status.', 'error');
+      }
+    }
+  };
+
+  const handleDelete = async (bookingId: number) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This booking will be permanently deleted.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#EF4444',
+      confirmButtonText: 'Yes, delete it!',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteBooking(bookingId).unwrap();
+        Swal.fire('Deleted!', 'Booking deleted successfully.', 'success');
+        refetch(); // Refresh list
+      } catch (error) {
+        Swal.fire('Error!', 'Failed to delete booking.', 'error');
+      }
+    }
+  };
 
   if (isLoading) return <div className="p-6 pt-20 text-gray-600">Loading bookings...</div>;
   if (isError) return <div className="p-6 pt-20 text-red-600">Failed to load bookings.</div>;
@@ -71,17 +125,18 @@ const AllBookings = () => {
               <tr>
                 <th className="py-3 px-4">Booking ID</th>
                 <th className="py-3 px-4">User ID</th>
-                <th className="py-3 px-4">Hotel Name</th>
-                <th className="py-3 px-4">Room Type & Price</th>
+                <th className="py-3 px-4">Hotel</th>
+                <th className="py-3 px-4">Room & Price</th>
                 <th className="py-3 px-4">Check-in</th>
                 <th className="py-3 px-4">Check-out</th>
                 <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredBookings.map((booking) => (
                 <tr key={booking.bookingId} className="border-t hover:bg-gray-50 text-sm">
-                  <td className="py-4 px-4 text-gray-800 font-medium">#{booking.bookingId}</td>
+                  <td className="py-4 px-4 font-medium text-gray-800">#{booking.bookingId}</td>
                   <td className="py-4 px-4">{booking.user?.userId ?? 'N/A'}</td>
                   <td className="py-4 px-4">{booking.room?.hotel?.name ?? 'N/A'}</td>
                   <td className="py-4 px-4">
@@ -111,6 +166,22 @@ const AllBookings = () => {
                     >
                       {booking.bookingStatus}
                     </span>
+                  </td>
+                  <td className="py-4 px-4 flex gap-2">
+                    <button
+                      onClick={() => handleStatusChange(booking)}
+                      className="!bg-green-100 text-green-700 p-2 rounded hover:bg-green-200 transition"
+                      title="Edit Status"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(booking.bookingId)}
+                      className="!bg-red-100 text-red-700 p-2 rounded hover:bg-red-200 transition"
+                      title="Delete Booking"
+                    >
+                      <FaTrash />
+                    </button>
                   </td>
                 </tr>
               ))}

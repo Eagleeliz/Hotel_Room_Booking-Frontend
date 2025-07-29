@@ -1,127 +1,115 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "../app/store";
-import { useGetPaymentsByUserIdQuery } from "../features/api/PaymentApi";
-import type { PaymentWithBooking } from "../types/Types";
+import { useState, useMemo } from 'react';
+import { useGetAllPaymentsQuery } from '../features/api/PaymentApi';
+import { FaSearch, FaFilter } from 'react-icons/fa';
 
-const MyPayments: React.FC = () => {
-  const user = useSelector((state: RootState) => state.auth.user);
-  const userId = user?.userId;
+const AllPayments = () => {
+  const { data: payments = [], isLoading, isError } = useGetAllPaymentsQuery({});
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
-  const {
-    data: payments,
-    isLoading,
-    isError,
-    error,
-  } = useGetPaymentsByUserIdQuery(userId?.toString() ?? "", {
-    skip: !userId,
-  });
+  const filteredPayments = useMemo(() => {
+    return payments.filter((payment: any) => {
+      const matchesSearch =
+        payment.paymentId?.toString().includes(search) ||
+        payment.booking?.user?.userId?.toString().includes(search) ||
+        payment.booking?.room?.hotel?.name.toLowerCase().includes(search.toLowerCase());
 
-  if (!userId) return <p className="text-black">Please log in to view your payments.</p>;
-  if (isLoading) return <p className="text-black">Loading payments...</p>;
-  if (isError) {
-    console.error("Payment fetch error:", error);
-    return <p className="text-red-500">Failed to load payments.</p>;
-  }
+      const matchesStatus = statusFilter ? payment.paymentStatus === statusFilter : true;
 
-  if (!payments || payments.length === 0) {
-    return <p className="text-black">You have no payment history yet.</p>;
-  }
+      return matchesSearch && matchesStatus;
+    });
+  }, [payments, search, statusFilter]);
+
+  if (isLoading) return <div className="p-6 pt-20 text-gray-600">Loading payments...</div>;
+  if (isError) return <div className="p-6 pt-20 text-red-600">Failed to load payments.</div>;
 
   return (
-    <div className="p-4 sm:p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-semibold text-rose-600 mb-6">My Payments</h2>
+    <div className="p-6 pt-10">
+      <h2 className="text-2xl font-bold mb-6">All Payments ({filteredPayments.length})</h2>
 
-      {/* Desktop Table */}
-      <div className="hidden md:block overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300 rounded-xl shadow-md">
-          <thead className="bg-gray-50 text-left">
-            <tr>
-              <th className="px-4 py-3 border-b text-black font-medium">Amount (KES)</th>
-              <th className="px-4 py-3 border-b text-black font-medium">Status</th>
-              <th className="px-4 py-3 border-b text-black font-medium">Payment Date</th>
-              <th className="px-4 py-3 border-b text-black font-medium">Check-in</th>
-              <th className="px-4 py-3 border-b text-black font-medium">Check-out</th>
-              <th className="px-4 py-3 border-b text-black font-medium">Room Type</th>
-              <th className="px-4 py-3 border-b text-black font-medium">Hotel</th>
-              <th className="px-4 py-3 border-b text-black font-medium">Transaction ID</th>
-              <th className="px-4 py-3 border-b text-black font-medium">Payment Method</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payments.map((item: PaymentWithBooking) => {
-              const { payment, checkInDate, checkOutDate, room } = item;
-              const amount = Number(payment?.amount).toLocaleString("en-KE", {
-                style: "currency",
-                currency: "KES",
-              });
-              const paymentDate = new Date(payment?.paymentDate).toLocaleDateString("en-KE");
-              const statusColor =
-                payment?.paymentStatus === "Completed"
-                  ? "text-green-500"
-                  : payment?.paymentStatus === "Failed"
-                  ? "text-red-500"
-                  : "text-yellow-500";
+      {/* Search and Filter */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+        <div className="relative w-full sm:w-1/3">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <FaSearch className="text-gray-400" />
+          </div>
+          <input
+            type="text"
+            placeholder="Search by Payment ID, User ID, or Hotel..."
+            className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
-              return (
-                <tr key={payment?.paymentId} className="border-t text-black">
-                  <td className="px-4 py-2 border">{amount}</td>
-                  <td className={`px-4 py-2 border font-semibold ${statusColor}`}>
-                    {payment?.paymentStatus}
+        <div className="relative w-full sm:w-1/4">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <FaFilter className="text-gray-400" />
+          </div>
+          <select
+            className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full appearance-none"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="">All Statuses</option>
+            <option value="Completed">Completed</option>
+            <option value="Pending">Pending</option>
+            <option value="Failed">Failed</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Table */}
+      {filteredPayments.length === 0 ? (
+        <div className="border p-6 text-center rounded-lg shadow text-gray-600 bg-gray-50">
+          No payments found matching your criteria.
+        </div>
+      ) : (
+        <div className="overflow-x-auto shadow rounded-lg">
+          <table className="min-w-full bg-white">
+            <thead className="bg-rose-100 text-left">
+              <tr>
+                <th className="py-3 px-4">Payment ID</th>
+                <th className="py-3 px-4">User ID</th>
+                <th className="py-3 px-4">Hotel Name</th>
+                <th className="py-3 px-4">Date</th>
+                <th className="py-3 px-4">Amount</th>
+                <th className="py-3 px-4">Method</th>
+                <th className="py-3 px-4">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPayments.map((payment: any) => (
+                <tr key={payment.paymentId} className="border-t hover:bg-gray-50 text-sm">
+                  <td className="py-4 px-4 font-medium">#{payment.paymentId}</td>
+                  <td className="py-4 px-4">{payment.booking?.user?.userId ?? 'N/A'}</td>
+                  <td className="py-4 px-4">{payment.booking?.room?.hotel?.name ?? 'N/A'}</td>
+                  <td className="py-4 px-4">
+                    {new Date(payment.paymentDate).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-2 border">{paymentDate}</td>
-                  <td className="px-4 py-2 border">{checkInDate}</td>
-                  <td className="px-4 py-2 border">{checkOutDate}</td>
-                  <td className="px-4 py-2 border">{room?.roomType ?? "N/A"}</td>
-                  <td className="px-4 py-2 border">{room?.hotel?.name ?? "N/A"}</td>
-                  <td className="px-4 py-2 border">{payment?.transactionId ?? "N/A"}</td>
-                  <td className="px-4 py-2 border">{payment?.paymentMethod}</td>
+                  <td className="py-4 px-4">${payment.amount}</td>
+                  <td className="py-4 px-4">{payment.paymentMethod}</td>
+                  <td className="py-4 px-4">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                        payment.paymentStatus === 'Completed'
+                          ? 'bg-green-100 text-green-700'
+                          : payment.paymentStatus === 'Pending'
+                          ? 'bg-yellow-100 text-yellow-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}
+                    >
+                      {payment.paymentStatus}
+                    </span>
+                  </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Mobile Card View */}
-      <div className="md:hidden space-y-4">
-        {payments.map((item: PaymentWithBooking) => {
-          const { payment, checkInDate, checkOutDate, room } = item;
-          const amount = Number(payment?.amount).toLocaleString("en-KE", {
-            style: "currency",
-            currency: "KES",
-          });
-          const paymentDate = new Date(payment?.paymentDate).toLocaleDateString("en-KE");
-          const statusColor =
-            payment?.paymentStatus === "Completed"
-              ? "text-green-500"
-              : payment?.paymentStatus === "Failed"
-              ? "text-red-500"
-              : "text-yellow-500";
-
-          return (
-            <div
-              key={payment?.paymentId}
-              className="bg-white rounded-xl shadow-md p-4 border border-gray-200"
-            >
-              <p><span className="font-semibold">Amount:</span> {amount}</p>
-              <p className="font-semibold">
-                <span>Status:</span>{" "}
-                <span className={statusColor}>{payment?.paymentStatus}</span>
-              </p>
-              <p><span className="font-semibold">Payment Date:</span> {paymentDate}</p>
-              <p><span className="font-semibold">Check-in:</span> {checkInDate}</p>
-              <p><span className="font-semibold">Check-out:</span> {checkOutDate}</p>
-              <p><span className="font-semibold">Room Type:</span> {room?.roomType ?? "N/A"}</p>
-              <p><span className="font-semibold">Hotel:</span> {room?.hotel?.name ?? "N/A"}</p>
-              <p><span className="font-semibold">Transaction ID:</span> {payment?.transactionId ?? "N/A"}</p>
-              <p><span className="font-semibold">Method:</span> {payment?.paymentMethod}</p>
-            </div>
-          );
-        })}
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
 
-export default MyPayments;
+export default AllPayments;
