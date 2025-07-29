@@ -55,7 +55,6 @@ export const AllUsers = () => {
     }
   };
 
-  // ✅ Updated to send only role and user_id
   const handleRoleChange = async (userId: number, currentRole: 'admin' | 'user') => {
     const { value: newRole } = await Swal.fire({
       title: 'Edit User Role',
@@ -119,6 +118,7 @@ export const AllUsers = () => {
           <table className="min-w-full bg-white shadow rounded-lg text-sm">
             <thead className="bg-rose-100 text-left">
               <tr>
+                <th className="py-2 px-3">User ID</th>
                 <th className="py-2 px-3">First</th>
                 <th className="py-2 px-3">Last</th>
                 <th className="py-2 px-3">Email</th>
@@ -132,6 +132,7 @@ export const AllUsers = () => {
             <tbody>
               {filteredUsers.map((user) => (
                 <tr key={user.userId} className="border-t hover:bg-gray-50">
+                  <td className="py-2 px-3">{user.userId}</td>
                   <td className="py-2 px-3">{user.firstName}</td>
                   <td className="py-2 px-3">{user.lastName}</td>
                   <td className="py-2 px-3">{user.email}</td>
@@ -140,9 +141,7 @@ export const AllUsers = () => {
                   <td className="py-2 px-3 capitalize">{user.role}</td>
                   <td className="py-2 px-3 text-center">
                     <div className="text-xs font-medium">
-                      {
-                        allBookings.filter((b) => b.user?.userId === user.userId).length
-                      }
+                      {allBookings.filter((b) => b.user?.userId === user.userId).length}
                     </div>
                     <button
                       onClick={() => openModal(user.userId)}
@@ -219,7 +218,9 @@ export const AllUsers = () => {
                         <td className="px-4 py-2 text-black">${b.room?.pricePerNight ?? '0'}</td>
                         <td className="px-4 py-2 text-black">{b.checkInDate}</td>
                         <td className="px-4 py-2 text-black">{b.checkOutDate}</td>
-                        <td className="px-4 py-2 text-black capitalize">{b.bookingStatus ?? 'pending'}</td>
+                        <td className="px-4 py-2 text-black capitalize">
+                          {b.bookingStatus ?? 'pending'}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

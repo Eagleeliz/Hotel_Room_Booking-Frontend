@@ -1,24 +1,84 @@
-import  { useState, useMemo } from 'react';
-import { useGetAllPaymentsQuery } from '../../features/api/PaymentApi';
-import { FaSearch, FaFilter } from 'react-icons/fa';
+import { useState, useMemo } from 'react';
+import {
+  useGetAllPaymentsQuery,
+  useUpdatePaymentStatusMutation,
+  useDeletePaymentMutation,
+} from '../../features/api/PaymentApi';
+import { FaSearch, FaFilter, FaEdit, FaTrash } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 const AllPayments = () => {
-  const { data: payments = [], isLoading, isError } = useGetAllPaymentsQuery({}); // FIXED: added {}
+  const { data: payments = [], isLoading, isError, refetch } = useGetAllPaymentsQuery({});
+  const [updatePaymentStatus] = useUpdatePaymentStatusMutation();
+  const [deletePayment] = useDeletePaymentMutation();
+
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
+  // ✅ Filtered search + status
   const filteredPayments = useMemo(() => {
     return payments.filter((payment: any) => {
       const matchesSearch =
         payment.paymentId?.toString().includes(search) ||
         payment.booking?.user?.userId?.toString().includes(search) ||
-        payment.booking?.room?.hotel?.name.toLowerCase().includes(search.toLowerCase());
+        payment.booking?.room?.hotel?.name?.toLowerCase().includes(search.toLowerCase());
 
       const matchesStatus = statusFilter ? payment.paymentStatus === statusFilter : true;
 
       return matchesSearch && matchesStatus;
     });
   }, [payments, search, statusFilter]);
+
+  // ✅ Handle status update (using paymentId instead of bookingId)
+  const handleStatusChange = async (payment: any) => {
+    const { value: newStatus } = await Swal.fire({
+      title: 'Edit Payment Status',
+      input: 'select',
+      inputOptions: {
+        Completed: 'Completed',
+        Pending: 'Pending',
+        Failed: 'Failed',
+      },
+      inputValue: payment.paymentStatus,
+      showCancelButton: true,
+      confirmButtonColor: '#10B981',
+    });
+
+    if (newStatus && newStatus !== payment.paymentStatus) {
+      try {
+        await updatePaymentStatus({
+          paymentId: payment.paymentId,
+          status: newStatus,
+        }).unwrap();
+        Swal.fire('Updated!', 'Payment status updated successfully.', 'success');
+        refetch();
+      } catch (error) {
+        Swal.fire('Error', 'Failed to update payment status.', 'error');
+      }
+    }
+  };
+
+  // ✅ Handle delete
+  const handleDelete = async (paymentId: number) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This payment will be permanently deleted.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#EF4444',
+      confirmButtonText: 'Yes, delete it!',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deletePayment(paymentId).unwrap();
+        Swal.fire('Deleted!', 'Payment deleted successfully.', 'success');
+        refetch();
+      } catch (error) {
+        Swal.fire('Error!', 'Failed to delete payment.', 'error');
+      }
+    }
+  };
 
   if (isLoading) return <div className="p-6 pt-20 text-gray-600">Loading payments...</div>;
   if (isError) return <div className="p-6 pt-20 text-red-600">Failed to load payments.</div>;
@@ -76,12 +136,13 @@ const AllPayments = () => {
                 <th className="py-3 px-4">Method</th>
                 <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4">Date</th>
+                <th className="py-3 px-4">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredPayments.map((payment: any) => (
                 <tr key={payment.paymentId} className="border-t hover:bg-gray-50 text-sm">
-                  <td className="py-4 px-4 text-gray-800 font-medium">#{payment.paymentId}</td>
+                  <td className="py-4 px-4 font-medium text-gray-800">#{payment.paymentId}</td>
                   <td className="py-4 px-4">{payment.booking?.user?.userId ?? 'N/A'}</td>
                   <td className="py-4 px-4">{payment.booking?.room?.hotel?.name ?? 'N/A'}</td>
                   <td className="py-4 px-4">${payment.amount}</td>
@@ -102,6 +163,23 @@ const AllPayments = () => {
                   <td className="py-4 px-4">
                     {new Date(payment.paymentDate).toLocaleDateString()}
                   </td>
+                  {/* ✅ Actions column */}
+                  <td className="py-4 px-4 flex gap-2">
+                    <button
+                      onClick={() => handleStatusChange(payment)}
+                      className="!bg-green-100 text-green-700 p-2 rounded hover:bg-green-200 transition"
+                      title="Edit Payment Status"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(payment.paymentId)}
+                      className="!bg-red-100 text-red-700 p-2 rounded hover:bg-red-200 transition"
+                      title="Delete Payment"
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -113,4 +191,3 @@ const AllPayments = () => {
 };
 
 export default AllPayments;
-

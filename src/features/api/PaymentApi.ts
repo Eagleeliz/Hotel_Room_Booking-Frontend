@@ -1,4 +1,3 @@
-// src/features/api/paymentApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "../../app/store";
 import { apiDomain } from "../../BackendUrl";
@@ -6,7 +5,7 @@ import { apiDomain } from "../../BackendUrl";
 export const paymentApi = createApi({
   reducerPath: "paymentApi",
   baseQuery: fetchBaseQuery({
-    baseUrl:apiDomain,
+    baseUrl: apiDomain,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {
@@ -40,12 +39,21 @@ export const paymentApi = createApi({
       invalidatesTags: ["Payments"],
     }),
 
-    // ✅ Optional: update payment status manually
+    // ✅ Update payment status by paymentId
     updatePaymentStatus: builder.mutation({
-      query: ({ bookingId, status }: { bookingId: string; status: "Pending" | "Completed" }) => ({
+      query: ({ paymentId, status }: { paymentId: number; status: "Pending" | "Completed" | "Failed" }) => ({
         url: "payments/status",
         method: "PATCH",
-        body: { bookingId, status },
+        body: { paymentId, status },
+      }),
+      invalidatesTags: ["Payments"],
+    }),
+
+    // ✅ Delete payment by ID
+    deletePayment: builder.mutation({
+      query: (paymentId: number) => ({
+        url: `payments/${paymentId}`,
+        method: "DELETE",
       }),
       invalidatesTags: ["Payments"],
     }),
@@ -57,4 +65,5 @@ export const {
   useGetPaymentsByUserIdQuery,
   useCreatePaymentIntentMutation,
   useUpdatePaymentStatusMutation,
+  useDeletePaymentMutation,
 } = paymentApi;
