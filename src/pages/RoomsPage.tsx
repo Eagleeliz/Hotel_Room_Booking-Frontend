@@ -9,6 +9,7 @@ import { toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 import 'react-toastify/dist/ReactToastify.css';
 import StripeCheckoutButton from "../dashboard/StripeCheckoutButton";
+import { apiDomain } from "../BackendUrl";
 
 const RoomsPage: React.FC = () => {
   const { hotelId } = useParams<{ hotelId: string }>();
@@ -56,9 +57,10 @@ const RoomsPage: React.FC = () => {
     setHasCheckedAvailability(true);
 
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/booking/search/date-range?startDate=${checkInDate}&endDate=${checkOutDate}`
-      );
+           const res = await axios.get(
+  `${apiDomain}booking/search/date-range?startDate=${checkInDate}&endDate=${checkOutDate}`
+);
+
       const data = res.data;
       const ids = data.map((b: any) => b.room?.roomId);
       setBookedRoomIds(ids);
