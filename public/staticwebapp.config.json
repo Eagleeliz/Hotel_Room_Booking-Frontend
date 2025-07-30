@@ -1,0 +1,13 @@
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/api/*"]
+  },
+  "routes": [
+    {
+      "route": "/api/*",
+      "rewrite": "hotelroombooking-fjbzceb6ajhebte2.southafricanorth-01.azurewebsites.net/api/:path*",
+      "allowedRoles": ["anonymous"]
+    }
+  ]
+}
