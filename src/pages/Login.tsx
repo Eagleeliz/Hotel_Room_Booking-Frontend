@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import loginImage from "../assets/register.svg";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner";
