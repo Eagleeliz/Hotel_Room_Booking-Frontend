@@ -135,7 +135,7 @@ const Login = () => {
     <button
       type="button"
       onClick={() => setShowPassword((prev) => !prev)}
-      className="!text-gray-800 hover:text-rose-300  !bg-rose-400"
+      className="!text-gray-700 hover:text-rose-300  !bg-rose-300"
     >
       {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
     </button>
