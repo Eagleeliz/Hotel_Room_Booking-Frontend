@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
-import  {useCreateBookingMutation} from "../features/api/BookingApi";
+import { useCreateBookingMutation } from "../features/api/BookingApi";
 
 interface MyPaymentProps {
   roomId: number;
@@ -24,16 +24,19 @@ const StripeCheckoutButton: React.FC<MyPaymentProps> = ({
   const [error, setError] = useState('');
   const [createBooking] = useCreateBookingMutation();
 
-
   const handleCheckout = async () => {
     setLoading(true);
     setError('');
 
     try {
       // ✅ Step 1: Create the booking directly as "Confirmed"
-      const bookingResponse = await createBooking({roomId, userId, checkInDate, checkOutDate,}).unwrap()
+      const bookingResponse = await createBooking({
+        roomId,
+        userId,
+        checkInDate,
+        checkOutDate,
+      }).unwrap();
       const booking = bookingResponse.booking;
-      console.log(booking)
 
       // ✅ Step 2: Initiate Stripe checkout session
       const stripeResponse = await axios.post(
@@ -62,7 +65,7 @@ const StripeCheckoutButton: React.FC<MyPaymentProps> = ({
   };
 
   return (
-    <div className={`w-full max-w-xs ${className}`}>
+    <div className={`w-full ${className ?? ''}`}>
       {error && (
         <div className="text-red-600 text-sm flex items-center gap-2 mb-2">
           <AlertTriangle className="w-4 h-4" /> {error}
@@ -72,8 +75,10 @@ const StripeCheckoutButton: React.FC<MyPaymentProps> = ({
       <button
         onClick={handleCheckout}
         disabled={loading}
-        className={`w-full flex justify-center items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all
-          ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'}`}
+        className={`w-full flex justify-center items-center gap-2 px-5 py-3 rounded-xl text-white text-sm font-semibold transition-all duration-300 ease-in-out
+          ${loading 
+            ? 'bg-gray-400 cursor-not-allowed' 
+            : 'bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 shadow-md hover:shadow-xl hover:scale-[1.02]'}`}
       >
         {loading ? (
           <>

@@ -219,43 +219,55 @@ const RoomsPage: React.FC = () => {
           );
         })}
       </div>
+    {showModal && selectedRoom && (
+  <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+  <div className="relative bg-black/30 backdrop-blur-lg text-white p-8 rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.1)] w-full max-w-lg min-h-[420px] border border-white/10 transition-all duration-300 scale-100">  
+      {/* Close Button */}
+      <button
+  onClick={closeModal}
+  className="absolute top-3 right-4 text-white !bg-red-400 hover:bg-red-700 transition-all duration-300 p-2 rounded-full shadow-md"
+>
+  &times;
+</button>
 
-      {showModal && selectedRoom && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black bg-opacity-40">
-          <div className="relative bg-white text-black p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
-            <button
-              className="absolute top-3 right-4 text-gray-500 hover:text-red-500 text-xl"
-              onClick={closeModal}
-            >
-              &times;
-            </button>
-            <h2 className="text-2xl font-semibold mb-4 text-center">Booking Summary</h2>
 
-            <div className="space-y-2">
-              <p><span className="font-medium">Room:</span> {selectedRoom.roomType ?? "N/A"}</p>
-              <p><span className="font-medium">Hotel:</span> {hotelName}</p>
-              <p><span className="font-medium">Check-in:</span> {checkInDate ?? "N/A"}</p>
-              <p><span className="font-medium">Check-out:</span> {checkOutDate ?? "N/A"}</p>
-              <p><span className="font-medium">Price per night:</span> ${selectedRoom.pricePerNight ?? 0}</p>
-              <p><span className="font-medium">Number of nights:</span> {numberOfNights}</p>
-              <p className="font-semibold text-lg mt-2">
-                <span className="font-medium">Total:</span> $
-                {(selectedRoom.pricePerNight * numberOfNights).toFixed(2)}
-              </p>
-            </div>
+      {/* Gradient Header */}
+      <h2 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-transparent bg-clip-text">
+        Booking Summary
+      </h2>
 
-            <div className="mt-6">
-              <StripeCheckoutButton
-                roomId={selectedRoom.roomId}
-                userId={userId}
-                checkInDate={checkInDate}
-                checkOutDate={checkOutDate}
-                amount={selectedRoom.pricePerNight * numberOfNights}
-              />
-            </div>
-          </div>
+      {/* Booking Info */}
+      <div className="space-y-2 text-sm sm:text-base">
+        <p><span className="font-medium">Room:</span> {selectedRoom.roomType ?? "N/A"}</p>
+        <p><span className="font-medium">Hotel:</span> {hotelName}</p>
+        <p><span className="font-medium">Check-in:</span> {checkInDate ?? "N/A"}</p>
+        <p><span className="font-medium">Check-out:</span> {checkOutDate ?? "N/A"}</p>
+        <p><span className="font-medium">Price per night:</span> ${selectedRoom.pricePerNight ?? 0}</p>
+        <p><span className="font-medium">Number of nights:</span> {numberOfNights}</p>
+        <p className="font-semibold text-lg mt-2">
+          <span className="font-medium">Total:</span> $
+          {(selectedRoom.pricePerNight * numberOfNights).toFixed(2)}
+        </p>
+      </div>
+
+      {/* Stripe Checkout */}
+      <div className="mt-6">
+        <div className="w-full hover:scale-[1.02] transition-transform duration-200">
+          <StripeCheckoutButton
+            roomId={selectedRoom.roomId}
+            userId={userId}
+            checkInDate={checkInDate}
+            checkOutDate={checkOutDate}
+            amount={selectedRoom.pricePerNight * numberOfNights}
+          />
         </div>
-      )}
+      </div>
+    </div>
+  </div>
+)}
+
+
+
     </section>
   );
 };
