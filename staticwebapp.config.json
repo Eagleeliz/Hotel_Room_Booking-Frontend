@@ -1,0 +1,12 @@
+{
+  "routes": [
+    {
+      "route": "/api/*",
+      "rewrite": "https://hotelroombooking-fjbzceb6ajhebte2.southafricanorth-01.azurewebsites.net/api/:path*"
+    },
+    {
+      "route": "/*",
+      "rewrite": "/index.html"
+    }
+  ]
+}
