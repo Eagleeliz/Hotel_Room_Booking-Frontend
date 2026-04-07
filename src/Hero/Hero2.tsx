@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 
 const Hero2: React.FC = () => {
   return (
+
     <section className="w-screen min-h-screen bg-rose-50 text-gray-800 px-6 py-20 overflow-x-hidden">
       {/* Heading */}
       <motion.h1
